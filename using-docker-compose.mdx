@@ -78,17 +78,30 @@ docker compose version
     APP_KEY=base64:YOUR_APP_KEY
     APP_ENV=production
     APP_DEBUG=false
+    APP_URL=http://localhost:8080
+    APP_TIMEZONE=Asia/Manila
     
-    DB_CONNECTION=mysql
-    DB_HOST=mysql
-    DB_PORT=3306
-    DB_DATABASE=zepeed
-    DB_USERNAME=zepeed_user
-    DB_PASSWORD=secure_password
+    PUSHER_APP_ID=
+    PUSHER_APP_KEY=
+    PUSHER_APP_SECRET=
+    PUSHER_APP_CLUSTER=mt1
+    PUSHER_HOST=soketi
+    PUSHER_SCHEME=http
+    PUSHER_PORT=6001
     
-    CACHE_DRIVER=redis
-    REDIS_HOST=redis
-    REDIS_PORT=6379
+    VITE_APP_NAME="${APP_NAME}"
+    VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+    VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+    VITE_PUSHER_HOST=localhost
+    VITE_PUSHER_PORT="${PUSHER_PORT}"
+    VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+    
+    AUTORUN_LARAVEL_CONFIG_CACHE=false
+    AUTORUN_LARAVEL_EVENT_CACHE=false
+    AUTORUN_LARAVEL_OPTIMIZE=false
+    AUTORUN_LARAVEL_ROUTE_CACHE=false
+    AUTORUN_LARAVEL_VIEW_CACHE=false
+    AUTORUN_LARAVEL_MIGRATION_SEED=true
     ```
 
     <Warning>
@@ -589,7 +602,20 @@ After installation:
 
 ## Related Pages
 
-- [Configuration Guide](/configuration/overview)
-- [API Reference](/api/overview)
-- [Speedtest Providers](/features/speedtest-providers)
-- [Email Notifications](/features/email-notifications)
+<CardGroup cols={2}>
+  <Card title="Getting Started" icon="rocket" href="/getting-started/installation">
+    Install and deploy Zepeed
+  </Card>
+
+  <Card title="Speedtest Providers" icon="sliders" href="/features/speedtest-providers">
+    List of Speedtest Providers
+  </Card>
+
+  <Card title="API Reference" icon="code" href="/api/overview">
+    Integrate with external systems
+  </Card>
+
+  <Card title="Introduction" icon="book" href="/">
+    Back to introduction
+  </Card>
+</CardGroup>

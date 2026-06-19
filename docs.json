@@ -17,8 +17,16 @@
         "pages": [
           {
             "group": "Installation",
-            "pages": []
+            "pages": [
+              "using-docker-compose"
+            ]
           }
+        ]
+      },
+      {
+        "group": "Contribute",
+        "pages": [
+          "docker-compose-development-guide"
         ]
       }
     ]

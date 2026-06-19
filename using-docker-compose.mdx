@@ -132,6 +132,15 @@ docker compose version
     docker compose restart app
     ```
   </Step>
+  <Step title="Create a user account">
+    Open the Docker terminal for the `app` container and run the following command to create your initial user account:
+
+    ```bash
+    docker compose exec app php artisan app:create-user-account
+    ```
+
+    Follow the interactive prompts to set the user details.
+  </Step>
   <Step title="Verify installation">
     Open your browser and navigate to the application URL:
 

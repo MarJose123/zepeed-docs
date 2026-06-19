@@ -7,7 +7,6 @@
     "light": "#07C983",
     "dark": "#15803D"
   },
-  "favicon": "/favicon.svg",
   "navigation": {
     "pages": [
       {
@@ -16,12 +15,20 @@
           "index",
           "quickstart"
         ]
-      }
+      },
+      {
+        "group": "Getting Started",
+        "pages": [
+          {
+            "group": "Installation",
+            "pages": []
+          }
+        ]
+      },
+      "index",
+      "features",
+      "changelog"
     ]
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
   },
   "navbar": {
     "links": [],
@@ -55,5 +62,8 @@
   },
   "markdown": {
     "schema": false
+  },
+  "seo": {
+    "indexing": "all"
   }
 }

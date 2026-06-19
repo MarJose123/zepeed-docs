@@ -1,0 +1,111 @@
+---
+title: "Changelog"
+description: "Zepeed version history and release notes"
+---
+
+# Changelog
+
+Track all changes, improvements, and fixes to Zepeed across releases.
+
+## Latest Releases
+
+View detailed release notes and download specific versions from the [GitHub Releases page](https://github.com/MarJose123/zepeed/releases).
+
+## Full Changelog
+
+The complete changelog documenting every change to Zepeed is maintained in the repository:
+
+<Note>
+  The authoritative changelog is stored in the [Zepeed repository](https://github.com/MarJose123/zepeed). Always review the latest changelog before upgrading to a new version.
+</Note>
+
+**Repository Changelog:** [View on GitHub](https://github.com/MarJose123/zepeed/blob/main/CHANGELOG.md)
+
+## Versioning Strategy
+
+Zepeed follows [Semantic Versioning](https://semver.org/):
+
+- **MAJOR** version for incompatible API changes
+- **MINOR** version for new functionality in a backward-compatible manner
+- **PATCH** version for backward-compatible bug fixes
+
+## Release Schedule
+
+<Note>
+  Zepeed is under active development. Features, APIs, configuration options, and internal behavior may change without notice. Breaking changes can occur between releases as the project evolves.
+
+  If you depend on Zepeed in production, pin to a specific version and review release notes before upgrading.
+</Note>
+
+## Breaking Changes
+
+Breaking changes are clearly documented in release notes with the label **BREAKING**. Before upgrading across major versions, review the following:
+
+- API endpoint modifications or removals
+- Configuration option changes
+- Database schema changes
+- Authentication mechanism updates
+- Feature deprecations
+
+## Getting Notified
+
+To stay informed about new releases:
+
+1. **Watch the Repository**: Click the "Watch" button on [GitHub](https://github.com/MarJose123/zepeed)
+2. **GitHub Releases**: Subscribe to release notifications
+3. **Star the Repository**: Show your support and stay engaged with project updates
+
+## Accessing Previous Versions
+
+All historical versions are available:
+
+- [All Releases](https://github.com/MarJose123/zepeed/releases) - Download and review release notes
+- [Git Tags](https://github.com/MarJose123/zepeed/tags) - View all tagged versions
+- [Commit History](https://github.com/MarJose123/zepeed/commits/main) - Inspect individual commits
+
+## Upgrade Path
+
+When upgrading Zepeed:
+
+<Steps>
+  <Step title="Review Changelog">
+    Check the changelog for your current version up to the target version. Note any breaking changes.
+  </Step>
+  <Step title="Read Release Notes">
+    Visit the [Releases page](https://github.com/MarJose123/zepeed/releases) for your target version and read the detailed release notes.
+  </Step>
+  <Step title="Test in Staging">
+    Test the upgrade in a staging environment before applying to production.
+  </Step>
+  <Step title="Backup Database">
+    Always backup your database before upgrading.
+  </Step>
+  <Step title="Follow Migration Guide">
+    If provided in the release notes, follow any database migrations or configuration updates.
+  </Step>
+  <Step title="Verify Functionality">
+    After upgrading, verify that all features work as expected in your environment.
+  </Step>
+</Steps>
+
+## Migration Guides
+
+For significant releases, dedicated migration guides may be provided. Check the release notes for links to migration documentation.
+
+## Reporting Issues
+
+Found a bug or issue? Report it on the [GitHub Issues page](https://github.com/MarJose123/zepeed/issues).
+
+Include:
+
+- Current version
+- Steps to reproduce
+- Expected behavior
+- Actual behavior
+- Environment details (OS, PHP version, etc.)
+
+## Related Pages
+
+- [Installation Guide](/getting-started/installation)
+- [Configuration](/getting-started/configuration)
+- [Upgrades and Migrations](/deployment/upgrades)

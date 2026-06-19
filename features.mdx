@@ -1,0 +1,161 @@
+---
+title: "Features"
+description: "Comprehensive overview of Zepeed capabilities"
+---
+
+Zepeed provides a complete speedtest aggregation and monitoring platform with multiple providers, flexible scheduling, real-time notifications, and powerful API integration capabilities.
+
+## Speedtest Providers
+
+Run tests against multiple providers and combine results for comprehensive insight into your network performance.
+
+- **Speedtest Ookla** — Industry-standard speedtest with global server network
+- **LibreSpeed** — Privacy-focused speedtest with self-hosted capabilities
+- **Cloudflare** — Fast, lightweight testing from Cloudflare's infrastructure
+- **Fast.com** — Netflix's speed testing service
+
+Combine multiple providers in a single test to validate results across different measurement methodologies.
+
+## Test Execution
+
+Fully automated or manual speedtest execution with complete control over timing and frequency.
+
+- **Scheduled runs** — Define test schedules with customizable intervals (hourly, daily, weekly, monthly)
+- **Manual triggers** — Run tests on demand from the dashboard
+- **Concurrent testing** — Run multiple provider tests simultaneously
+- **Test history** — Complete historical record of all test results with timestamps
+- **Result storage** — Persistent storage of download/upload speeds, latency, and provider data
+
+Execute tests on your precise schedule without external dependencies or cloud services.
+
+## Notifications
+
+Get instant alerts when tests complete or fail through your preferred channels.
+
+- **Webhook integration** — Send test results to external systems in real-time
+- **Email notifications** — Automated test result delivery
+- **Multiple email providers** — SMTP, Mailgun, Postmark, AWS SES, Sendgrid, and more
+- **Custom templates** — Design notification templates matching your brand
+- **Failure alerts** — Get notified immediately when tests fail
+
+Route notifications to Slack, Discord, PagerDuty, or any HTTP endpoint via webhooks.
+
+## Monitoring & Analysis
+
+Track performance trends and identify issues over time.
+
+- **Performance dashboard** — View current speeds, history, and trends at a glance
+- **Historical data** — Analyze performance changes across days, weeks, months
+- **Trend identification** — Spot degradation patterns or improvement opportunities
+- **Latency monitoring** — Dedicated ping testing for latency measurement independent of speedtests
+- **Real-time display** — Live test execution monitoring from the UI
+
+Visualize your network performance with historical graphs and trend analysis.
+
+## Testing Configuration
+
+Create flexible test scenarios for different network conditions and requirements.
+
+- **Custom templates** — Build reusable test configurations
+- **Provider selection** — Choose which providers to use per test
+- **Schedule configuration** — Define when tests run
+- **Test parameters** — Customize test behavior per template
+- **Multiple configurations** — Maintain different test setups for different purposes
+
+Store templates for recurring test scenarios and reuse them across multiple test schedules.
+
+## Maintenance & Operations
+
+Control test execution around your maintenance windows and system changes.
+
+- **Maintenance windows** — Pause automated tests during scheduled maintenance
+- **Manual pause/resume** — Stop and restart testing at any time
+- **System health** — Monitor test execution health and provider availability
+- **Logging** — Complete audit trail of test execution and system events
+- **Error handling** — Graceful handling of test failures with detailed error messages
+
+Prevent test execution during maintenance periods with configurable maintenance windows.
+
+## API & Integration
+
+Integrate Zepeed into your existing systems and workflows.
+
+- **REST API** — Full-featured API for retrieving test results and managing configuration
+- **Webhook delivery** — Send test results to any HTTP endpoint
+- **Data export** — Access historical data for analysis in external tools
+- **Custom integrations** — Build dashboards, alerts, and automations on top of Zepeed
+- **Programmatic control** — Manage schedules and test execution via API
+
+Build custom dashboards, automated alerting systems, or integrate speedtest data into existing monitoring solutions.
+
+## User Management
+
+Control access and manage multiple users securely.
+
+- **User authentication** — Secure login and session management
+- **Role-based access** — Control what each user can access and modify
+- **Fortify authentication** — Laravel Fortify-based auth system
+- **Session management** — Secure session handling and logout
+- **Account settings** — Per-user configuration and preferences
+
+Manage multiple users with granular permission control.
+
+## User Interface
+
+Modern, responsive web interface for all management and monitoring tasks.
+
+- **Vue 3 dashboard** — Fast, interactive user interface
+- **Responsive design** — Works on desktop, tablet, and mobile
+- **Real-time updates** — Live test execution status and results
+- **Component library** — Built with shadcn/vue for consistent design
+- **Dark mode support** — Full dark and light theme support
+- **Intuitive navigation** — Easy access to all features and settings
+
+Manage all aspects of Zepeed from a modern, user-friendly dashboard.
+
+## Deployment & Infrastructure
+
+Deploy Zepeed in your environment with flexibility and control.
+
+- **Docker support** — Deploy via Docker Compose
+- **Self-hosted** — Complete control over infrastructure and data
+- **Customizable configuration** — Environment-based configuration
+- **Database flexibility** — Support for multiple database backends
+- **Local-only operation** — No cloud dependencies required
+- **Open source** — MIT licensed, source code available on GitHub
+
+Maintain complete ownership and control of your speed monitoring infrastructure.
+
+## Development Stack
+
+Built with modern, well-maintained technologies.
+
+- **Laravel 13** — Robust PHP framework with built-in features
+- **Vue 3** — Reactive, component-based frontend
+- **shadcn/vue** — Accessible, well-designed UI components
+- **Tailwind CSS v4** — Utility-first styling framework
+- **Vite** — Fast frontend build tooling
+- **TypeScript** — Type-safe JavaScript development
+- **Docker** — Containerized deployment
+
+Benefit from a modern, maintainable technology stack with active community support.
+
+## Related Pages
+
+<CardGroup cols={2}>
+  <Card title="Getting Started" icon="rocket" href="/getting-started/installation">
+    Install and deploy Zepeed
+  </Card>
+
+  <Card title="Configuration" icon="sliders" href="/configuration/overview">
+    Configure providers and notifications
+  </Card>
+
+  <Card title="API Reference" icon="code" href="/api/overview">
+    Integrate with external systems
+  </Card>
+
+  <Card title="Introduction" icon="book" href="/">
+    Back to introduction
+  </Card>
+</CardGroup>

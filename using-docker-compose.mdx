@@ -2,20 +2,7 @@
 title: "Using Docker Compose"
 ---
 
-Install and run Zepeed using Docker Compose for a consistent, isolated environment across development, staging, and production deployments.
-
-## Overview
-
-Docker Compose enables you to define Zepeed and its dependencies (PHP, Node.js, MySQL, Redis) in a single `compose.yaml` file, eliminating environment inconsistencies and simplifying deployment.
-
-This guide covers:
-
-- Complete Docker Compose setup
-- Environment configuration
-- Database initialization
-- Application startup
-- Production deployment considerations
-- Troubleshooting
+Install and run Zepeed using Docker Compose.
 
 ## Requirements
 
@@ -24,16 +11,13 @@ Install the following on your system:
 <Tabs>
   <Tab title="macOS">
     - **Docker Desktop**: [Download](https://www.docker.com/products/docker-desktop)
-    - **Bun** (optional): `brew install oven-sh/bun/bun`
   </Tab>
   <Tab title="Linux">
     - **Docker Engine**: [Installation guide](https://docs.docker.com/engine/install/)
     - **Docker Compose**: Included with Docker Engine 24.0\+
-    - **Bun** (optional): `curl -fsSL https://bun.sh/install | bash`
   </Tab>
   <Tab title="Windows">
     - **Docker Desktop**: [Download](https://www.docker.com/products/docker-desktop)
-    - **Bun** (optional): `powershell -c "irm bun.sh/install.ps1|iex"`
   </Tab>
 </Tabs>
 
@@ -166,344 +150,20 @@ docker compose version
   </Step>
 </Steps>
 
-## Services
-
-The default Docker Compose stack includes these services:
-
-### App (Laravel Application)
-
-Runs the Zepeed application using PHP-FPM.
-
-**Image**: Built from project `Dockerfile`\
-**Port**: 9000 (internal)\
-**Features**:
-
-- Laravel 13 with Inertia.js
-- Vue 3 frontend
-- Automatic asset compilation with Vite
-- Database migrations on startup
-
-### Web (Nginx)
-
-Reverse proxy serving HTTP requests to the application.
-
-**Image**: `nginx:latest`\
-**Port**: 80 (mapped to 8000 locally)\
-**Configuration**: `docker/nginx.conf`
-
-### MySQL
-
-Relational database storing application data.
-
-**Image**: `mysql:8.0`\
-**Port**: 3306\
-**Volume**: `mysql_data` persists across restarts\
-**Default Database**: `zepeed`
-
-<Warning>
-  MySQL 8.0 requires explicit authentication plugin configuration. The default authentication plugin `mysql_native_password` is enabled for compatibility.
-</Warning>
-
-### Redis
-
-In-memory cache and session store.
-
-**Image**: `redis:alpine`\
-**Port**: 6379\
-**Volume**: `redis_data` persists across restarts
-
-### Mailpit
-
-Local SMTP server and web UI for email testing.
-
-**Image**: `axllent/mailpit:latest`\
-**SMTP Port**: 1025\
-**Web UI**: `http://localhost:8025`
-
-Use Mailpit to preview emails sent by the application without exposing external SMTP credentials during development.
-
-## Configuration
-
-### Environment Variables
-
-Key variables for different deployment scenarios:
-
-<Tabs>
-  <Tab title="Development">
-    ```env
-    APP_ENV=local
-    APP_DEBUG=true
-    QUEUE_CONNECTION=sync
-    SESSION_DRIVER=file
-    CACHE_DRIVER=file
-    ```
-  </Tab>
-  <Tab title="Production">
-    ```env
-    APP_ENV=production
-    APP_DEBUG=false
-    QUEUE_CONNECTION=redis
-    SESSION_DRIVER=cookie
-    CACHE_DRIVER=redis
-    ```
-  </Tab>
-</Tabs>
-
-### Port Mapping
-
-Default port mappings (from container to host):
-
-| Service | Container Port | Host Port | Purpose |
-| --- | --- | --- | --- |
-| Web (Nginx) | 80 | 8000 | Application UI |
-| MySQL | 3306 | 3306 | Database access |
-| Redis | 6379 | 6379 | Cache/session access |
-| Mailpit | 1025, 8025 | 1025, 8025 | SMTP & email preview |
-
-To modify ports, edit the `ports` section in `compose.yaml` or use environment variable overrides:
+## Essential commands
 
 ```bash
-docker compose -f compose.yaml -f compose.override.yaml up -d
-```
-
-Create `compose.override.yaml`:
-
-```yaml
-services:
-  web:
-    ports:
-      - "8080:80"
-  mysql:
-    ports:
-      - "3307:3306"
-```
-
-### Volumes
-
-Persistent storage for application data and services:
-
-| Volume | Mount Path | Purpose |
-| --- | --- | --- |
-| `mysql_data` | `/var/lib/mysql` | Database persistence |
-| `redis_data` | `/data` | Cache persistence |
-| `.` | `/var/www/html` | Application source code |
-
-Volumes are stored in Docker's data directory. Inspect with:
-
-```bash
-docker volume ls
-docker volume inspect zepeed_mysql_data
-```
-
-### Custom Nginx Configuration
-
-Edit `docker/nginx.conf` to customize server behavior:
-
-```nginx
-# Example: Add custom headers
-add_header X-Frame-Options "SAMEORIGIN" always;
-add_header X-Content-Type-Options "nosniff" always;
- 
-# Example: Configure caching
-location ~* \.(jpg|jpeg|png|gif|ico|css|js|woff)$ {
-    expires 30d;
-}
-```
-
-After changes, rebuild the web service:
-
-```bash
-docker compose up -d --build web
-```
-
-## Common Tasks
-
-### View logs
-
-Display logs from a specific service or all services.
-
-```bash
-# All services
-docker compose logs -f
- 
-# Specific service
+# View logs
 docker compose logs -f app
- 
-# Last 50 lines
-docker compose logs --tail 50 app
-```
 
-### Execute artisan commands
+# Run artisan commands
+docker compose exec app php artisan <command>
 
-Run any Laravel artisan command from the app container.
-
-```bash
-docker compose exec app php artisan tinker
-docker compose exec app php artisan queue:work
-docker compose exec app php artisan schedule:run
-```
-
-### Access database
-
-Connect to MySQL from the host machine:
-
-```bash
-docker compose exec mysql mysql -u zepeed_user -p zepeed
-```
-
-Or use an external client (TablePlus, DBeaver, MySQL Workbench):
-
-- **Host**: `localhost` or `127.0.0.1`
-- **Port**: `3306`
-- **Username**: `zepeed_user`
-- **Password**: Check your `.env` file
-
-### Rebuild application image
-
-Rebuild the app container when the Dockerfile or dependencies change.
-
-```bash
-docker compose up -d --build app
-```
-
-### Clear application cache
-
-```bash
-docker compose exec app php artisan cache:clear
-docker compose exec app php artisan config:clear
-docker compose exec app php artisan view:clear
-```
-
-### Backup database
-
-Export the MySQL database to a SQL file:
-
-```bash
-docker compose exec mysql mysqldump -u zepeed_user -p zepeed > zepeed_backup.sql
-```
-
-When prompted, enter your database password from `.env`.
-
-### Restore database
-
-Import a previously exported SQL file:
-
-```bash
-docker compose exec mysql mysql -u zepeed_user -p zepeed < zepeed_backup.sql
-```
-
-### Stop containers
-
-Stop all running containers without removing them:
-
-```bash
+# Stop containers
 docker compose stop
-```
 
-Resume with:
-
-```bash
-docker compose start
-```
-
-### Remove containers and volumes
-
-Completely remove all containers, networks, and volumes:
-
-```bash
-docker compose down -v
-```
-
-<Warning>
-  This permanently deletes all data in MySQL and Redis. Always backup before running this command in production.
-</Warning>
-
-## Production Deployment
-
-### Security Hardening
-
-Before deploying to production, implement these security measures:
-
-<Steps>
-  <Step title="Use a reverse proxy">
-    Deploy Zepeed behind a reverse proxy (Nginx, Apache, Caddy) with:
-
-    - SSL/TLS encryption
-    - DDoS protection
-    - Rate limiting
-  </Step>
-  <Step title="Disable debug mode">
-    Set `APP_DEBUG=false` in `.env` to prevent sensitive information leaks.
-  </Step>
-  <Step title="Manage secrets">
-    Never store secrets in `.env` files in version control. Use:
-
-    - Kubernetes Secrets (Kubernetes deployments)
-    - Docker Secrets (Docker Swarm)
-    - Environment variable injection at runtime
-    - Secrets management services (HashiCorp Vault, AWS Secrets Manager)
-  </Step>
-  <Step title="Enable database authentication">
-    Use strong passwords for MySQL users and restrict network access.
-
-    ```sql
-    ALTER USER 'zepeed_user'@'%' IDENTIFIED BY 'strong_password_here';
-    FLUSH PRIVILEGES;
-    ```
-  </Step>
-  <Step title="Configure persistent storage">
-    Replace named volumes with bind mounts pointing to persistent storage:
-
-    ```yaml
-    services:
-      mysql:
-        volumes:
-          - /mnt/data/mysql:/var/lib/mysql
-    ```
-  </Step>
-  <Step title="Set resource limits">
-    Prevent resource exhaustion by adding memory and CPU limits to services:
-
-    ```yaml
-    services:
-      app:
-        deploy:
-          resources:
-            limits:
-              cpus: '2'
-              memory: 1G
-            reservations:
-              cpus: '1'
-              memory: 512M
-    ```
-  </Step>
-</Steps>
-
-### Scaling
-
-For high-traffic deployments, use Docker Swarm or Kubernetes to orchestrate multiple Zepeed instances behind a load balancer. The current single-instance Docker Compose setup is suitable for small to medium deployments.
-
-### Backup Strategy
-
-Automate daily backups of the MySQL database:
-
-```bash
-#!/bin/bash
-# backup.sh
- 
-BACKUP_DIR="/path/to/backups"
-DATE=$(date +%Y%m%d_%H%M%S)
- 
-docker compose exec -T mysql mysqldump \
-  -u zepeed_user \
-  -p"${DB_PASSWORD}" \
-  zepeed > "${BACKUP_DIR}/zepeed_${DATE}.sql"
-```
-
-Schedule with cron:
-
-```bash
-0 2 * * * /path/to/backup.sh
+# Rebuild after Dockerfile changes
+docker compose up -d --build app
 ```
 
 ## Troubleshooting
@@ -553,52 +213,14 @@ docker compose restart app
 docker compose logs app
 ```
 
-### Slow performance
-
-Monitor resource usage:
-
-```bash
-docker stats
-```
-
-If containers are resource-constrained, increase Docker's allocated memory and CPU in Docker Desktop settings.
-
-### Changes to code not reflected
-
-For development, enable file watching:
-
-```bash
-docker compose exec app npm run dev
-```
-
-For production assets:
-
-```bash
-docker compose exec app npm run build
-docker compose restart app
-```
-
 ### Reset to clean state
-
-Remove all containers, volumes, and networks, then rebuild:
 
 ```bash
 docker compose down -v
-rm -rf docker/volumes
 docker compose up -d
 docker compose exec app php artisan migrate
 docker compose exec app php artisan db:seed
 ```
-
-## Next Steps
-
-After installation:
-
-1. **Configure speedtest providers**: Set up Speedtest Ookla, LibreSpeed, Fast.com, or Cloudflare credentials in the application settings.
-2. **Set up email notifications**: Configure SMTP (or use Mailpit for development) to send speedtest results via email.
-3. **Create speedtest schedules**: Use the dashboard to define when and how often speedtests should run.
-4. **Enable webhooks**: Integrate with third-party services for real-time notifications.
-5. **Review documentation**: See [API Reference](/api/overview) and [Configuration Guide](/configuration/overview) for detailed setup options.
 
 ## Related Pages
 

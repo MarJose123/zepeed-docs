@@ -1,0 +1,63 @@
+---
+title: "Contribute to Update Docs"
+description: "How to contribute to the zepeed-docs repository"
+---
+
+We welcome contributions to the zepeed documentation. Whether you're fixing a typo, improving an explanation, or adding new content, your help is appreciated.
+
+## Prerequisites
+
+- A [GitHub account](https://github.com/signup)
+- [Git](https://git-scm.com/downloads) installed locally
+- [Node.js](https://nodejs.org/) (v19 or higher) for running the Mintlify preview
+- The [Mintlify CLI](https://www.npmjs.com/package/mintlify): `npm i -g mintlify`
+
+## Contribution workflow
+
+<Steps>
+  <Step title="Fork the repository">
+    Visit [marjose123/zepeed-docs](https://github.com/marjose123/zepeed-docs) and click **Fork** to create your own copy.
+  </Step>
+  <Step title="Clone your fork">
+    ```bash
+    git clone https://github.com/<your-username>/zepeed-docs.git
+    cd zepeed-docs
+    ```
+  </Step>
+  <Step title="Create a branch">
+    ```bash
+    git checkout -b your-branch-name
+    ```
+
+    Use a descriptive name like `fix/typo-quickstart` or `docs/add-api-guide`.
+  </Step>
+  <Step title="Make your changes">
+    Edit the `.mdx` files or update `docs.json` as needed. Preview locally with:
+
+    ```bash
+    mintlify dev
+    ```
+  </Step>
+  <Step title="Commit and push">
+    ```bash
+    git add .
+    git commit -m "Brief description of your changes"
+    git push origin your-branch-name
+    ```
+  </Step>
+  <Step title="Open a pull request">
+    Go to the [original repository](https://github.com/marjose123/zepeed-docs) and open a pull request from your branch. Describe what you changed and why.
+  </Step>
+</Steps>
+
+## Contribution guidelines
+
+- **Keep changes focused.** One PR per topic or fix.
+- **Follow existing style.** Match the tone, formatting, and structure of nearby pages.
+- **Test locally.** Run `mintlify dev` to confirm pages render correctly before submitting.
+- **Use clear commit messages.** Briefly describe what changed and why.
+- **Link related issues.** Reference any related issues in your PR description.
+
+## Reporting issues
+
+Found a bug or have a suggestion? [Open an issue](https://github.com/marjose123/zepeed-docs/issues) on GitHub with a clear description and steps to reproduce.

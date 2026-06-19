@@ -1,0 +1,71 @@
+---
+title: "Contribute to App"
+description: "How to contribute to the Zepeed application"
+---
+
+We welcome contributions to the [Zepeed app](https://github.com/marjose123/zepeed). Whether you're fixing bugs, adding features, or improving performance, your help is appreciated.
+
+## Prerequisites
+
+- A [GitHub account](https://github.com/signup)
+- [Git](https://git-scm.com/downloads) installed locally
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
+- Familiarity with the project's tech stack (see the [repository](https://github.com/marjose123/zepeed))
+
+## Contribution workflow
+
+<Steps>
+  <Step title="Fork the repository">
+    Visit [marjose123/zepeed](https://github.com/marjose123/zepeed) and click **Fork** to create your own copy.
+  </Step>
+  <Step title="Clone your fork">
+    ```bash
+    git clone https://github.com/<your-username>/zepeed.git
+    cd zepeed
+    ```
+  </Step>
+  <Step title="Create a branch">
+    ```bash
+    git checkout -b your-branch-name
+    ```
+
+    Use a descriptive name like `fix/login-bug` or `feat/add-dashboard-widget`.
+  </Step>
+  <Step title="Set up the development environment">
+    Spin up the app locally using Docker Compose:
+
+    ```bash
+    docker compose up -d
+    ```
+
+    See [Using Docker Compose](/using-docker-compose) for details.
+  </Step>
+  <Step title="Make your changes">
+    Implement your fix or feature. Keep changes focused and aligned with the existing code style.
+  </Step>
+  <Step title="Test your changes">
+    Verify the app runs as expected and that existing functionality is not broken before submitting.
+  </Step>
+  <Step title="Commit and push">
+    ```bash
+    git add .
+    git commit -m "Brief description of your changes"
+    git push origin your-branch-name
+    ```
+  </Step>
+  <Step title="Open a pull request">
+    Go to the [original repository](https://github.com/marjose123/zepeed) and open a pull request from your branch. Describe what you changed and why, and link any related issues.
+  </Step>
+</Steps>
+
+## Contribution guidelines
+
+- **Keep changes focused.** One PR per feature or fix.
+- **Follow existing style.** Match the conventions used throughout the codebase.
+- **Write clear commit messages.** Briefly describe what changed and why.
+- **Test before submitting.** Make sure the app builds and runs without errors.
+- **Document new features.** Update the docs when adding or changing user-facing behavior. See [Contribute to Update Docs](/contribute-to-update-docs).
+
+## Reporting issues
+
+Found a bug or have a feature request? [Open an issue](https://github.com/marjose123/zepeed/issues) on GitHub with a clear description, steps to reproduce, and any relevant screenshots or logs.

@@ -13,13 +13,6 @@
       "features",
       "changelog",
       {
-        "group": "Contribute",
-        "pages": [
-          "contribute-to-app",
-          "contribute-to-update-docs"
-        ]
-      },
-      {
         "group": "Getting Started",
         "pages": [
           {
@@ -28,6 +21,13 @@
               "using-docker-compose"
             ]
           }
+        ]
+      },
+      {
+        "group": "Contribute",
+        "pages": [
+          "contribute-to-app",
+          "contribute-to-update-docs"
         ]
       }
     ]

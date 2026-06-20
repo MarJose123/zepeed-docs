@@ -1,0 +1,236 @@
+---
+title: "Providers and schedule"
+---
+
+Configure speedtest providers and set up automated testing schedules in Zepeed.
+
+## Overview
+
+Zepeed supports multiple speedtest providers to give you flexibility in how you test your internet connection. After enabling providers, you can schedule automatic tests to run at regular intervals and track performance trends over time.
+
+Supported providers include:
+
+- Speedtest Ookla
+- LibreSpeed
+- Cloudflare
+- Netflix (Fast.com)
+
+## Requirements
+
+- Zepeed application is installed and running
+- Admin or user access to the dashboard
+- Internet connectivity for running speedtests
+- Configured cron job for automated scheduler (see [Scheduling](#scheduling) section)
+
+## Enable a Provider
+
+Zepeed supports multiple speedtest providers out of the box. Follow these steps to enable a provider.
+
+<Steps>
+  <Step title="Navigate to Settings">
+    From the dashboard, click your profile menu in the top right corner and select **Settings**.
+  </Step>
+  <Step title="Go to Providers">
+    In the Settings sidebar, click **Providers** to view available speedtest providers.
+  </Step>
+  <Step title="Enable a provider">
+    Click the **Enable** button next to the provider you want to use. The button will change to show the provider is now active.
+  </Step>
+  <Step title="Test the provider">
+    Go back to the dashboard and click **Run Test**. Select the provider you just enabled to verify it works correctly. Wait for the test to complete and check the results show download/upload speeds and ping information.
+  </Step>
+</Steps>
+
+<Note>
+  Make sure your system has internet connectivity and your firewall allows outbound connections to the speedtest provider's servers.
+</Note>
+
+## Scheduling
+
+Configure automated speedtests to run on a schedule.
+
+### Understanding schedules
+
+Zepeed uses cron expressions to define when tests run. A cron expression has five fields:
+
+```text
+┌───────────── minute (0 - 59)
+│ ┌───────────── hour (0 - 23)
+│ │ ┌───────────── day of month (1 - 31)
+│ │ │ ┌───────────── month (1 - 12)
+│ │ │ │ ┌───────────── day of week (0 - 7) (Sunday = 0 or 7)
+│ │ │ │ │
+│ │ │ │ │
+* * * * *
+```
+
+### Create a schedule
+
+<Steps>
+  <Step title="Navigate to Schedules">
+    From Settings, click **Schedules** in the sidebar.
+  </Step>
+  <Step title="Click New Schedule">
+    Click the **Create Schedule** or **New Schedule** button.
+  </Step>
+  <Step title="Fill in details">
+    Enter the following information:
+
+    - **Name**: A descriptive name (e.g., "Hourly Test")
+    - **Provider**: Select which provider to use
+    - **Cron Expression**: Enter the cron pattern for when tests run
+    - **Description** (optional): Notes about this schedule
+  </Step>
+  <Step title="Save">
+    Click **Save** to create the schedule.
+  </Step>
+</Steps>
+
+### Common schedule examples
+
+<Tabs>
+  <Tab title="Every 30 minutes">
+    ```text
+    */30 * * * *
+    ```
+
+    Runs tests every 30 minutes throughout the day.
+  </Tab>
+  <Tab title="Every hour">
+    ```text
+    0 * * * *
+    ```
+
+    Runs at the top of every hour (9:00, 10:00, 11:00, etc.).
+  </Tab>
+  <Tab title="Twice daily">
+    ```text
+    0 8,20 * * *
+    ```
+
+    Runs at 8:00 AM and 8:00 PM daily.
+  </Tab>
+  <Tab title="Every 4 hours">
+    ```text
+    0 */4 * * *
+    ```
+
+    Runs at midnight, 4 AM, 8 AM, noon, 4 PM, and 8 PM.
+  </Tab>
+  <Tab title="Business hours">
+    ```text
+    0 9-17 * * 1-5
+    ```
+
+    Runs hourly from 9 AM to 5 PM, Monday through Friday.
+  </Tab>
+  <Tab title="Daily at 2 AM">
+    ```text
+    0 2 * * *
+    ```
+
+    Runs once daily at 2:00 AM (good for low-traffic times).
+  </Tab>
+  <Tab title="Weekly on Monday">
+    ```text
+    0 8 * * 1
+    ```
+
+    Runs every Monday at 8:00 AM.
+  </Tab>
+</Tabs>
+
+### Enable the scheduler
+
+cron job is already configured in the docker image
+
+## Manage schedules
+
+### View active schedules
+
+In the **Schedules** section, you'll see a list of all configured schedules with:
+
+- Schedule name
+- Associated provider
+- Cron expression
+- Next run time
+- Status (enabled/disabled)
+
+### Edit a schedule
+
+<Steps>
+  <Step title="Locate the schedule">
+    Find the schedule you want to modify in the Schedules list.
+  </Step>
+  <Step title="Click Edit">
+    Click the **Edit** button or schedule name.
+  </Step>
+  <Step title="Update details">
+    Modify the name, provider, cron expression, or description.
+  </Step>
+  <Step title="Save changes">
+    Click **Save** to apply your changes.
+  </Step>
+</Steps>
+
+### Disable a schedule
+
+<Steps>
+  <Step title="Open the schedule">
+    Click on the schedule you want to disable.
+  </Step>
+  <Step title="Toggle status">
+    Click the **Disable** button or toggle the status switch to off.
+  </Step>
+  <Step title="Confirm">
+    The schedule will stop running, but the configuration is saved for later re-enabling.
+  </Step>
+</Steps>
+
+### Delete a schedule
+
+<Steps>
+  <Step title="Open the schedule">
+    Click on the schedule you want to delete.
+  </Step>
+  <Step title="Click Delete">
+    Click the **Delete** button.
+  </Step>
+  <Step title="Confirm deletion">
+    Confirm that you want to delete the schedule. This action cannot be undone.
+  </Step>
+</Steps>
+
+## Best practices
+
+<CardGroup cols={2}>
+  <Card title="Stagger test times">
+    Space out scheduled tests to avoid network congestion. Instead of all tests running at the top of the hour, use different minutes (e.g., 5, 25, 45).
+  </Card>
+
+  <Card title="Avoid peak hours">
+    Schedule tests during off-peak times when possible to get more accurate baseline speeds. Avoid testing during busy work hours.
+  </Card>
+
+  <Card title="Test during consistent conditions">
+    For meaningful comparisons, keep test conditions consistent. Run tests with similar network load and at regular intervals.
+  </Card>
+
+  <Card title="Monitor cron logs">
+    Regularly check cron execution logs to ensure schedules are running as expected and catch issues early.
+  </Card>
+
+  <Card title="Use multiple providers">
+    Enable multiple providers to get comprehensive data. Different providers may have different server locations and give you varied insights.
+  </Card>
+
+  <Card title="Review regularly">
+    Check your dashboard frequently to spot performance trends, anomalies, or issues with specific providers.
+  </Card>
+</CardGroup>
+
+## Related pages
+
+- [Dashboard](/features/dashboard) - View and interpret speedtest results
+- [Notifications](/features/notifications) - Get alerts for speed drops
+- [API Reference](/api/speedtests) - Programmatic access to test data

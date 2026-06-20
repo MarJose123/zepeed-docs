@@ -20,7 +20,8 @@
             "pages": [
               "using-docker-compose"
             ]
-          }
+          },
+          "Providers-and-schedule"
         ]
       },
       {

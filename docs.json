@@ -18,7 +18,8 @@
           {
             "group": "Installation",
             "pages": [
-              "using-docker-compose"
+              "using-docker-compose",
+              "docker-image"
             ]
           },
           "Providers-and-schedule"

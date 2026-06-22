@@ -1,0 +1,95 @@
+---
+title: "Environment Variables"
+sidebarTitle: "Environment Variables"
+description: "All environment variables available for configuring your Zepeed instance."
+---
+
+## Application
+
+<ParamField path="APP_KEY" type="string" required>
+  A unique 32-byte base64 encryption key for this installation. Generate it with the command below. Never share or commit this value. Changing it after first boot invalidates all existing sessions and encrypted data.
+
+  ```bash
+    echo "base64:$(openssl rand -base64 32 2>/dev/null)"
+  ```
+</ParamField>
+
+<ParamField path="APP_URL" type="string" required>
+  The full public URL of your Zepeed instance including scheme. For a local setup use `http://192.168.1.10:8080`. Behind a reverse proxy use `https://zepeed.example.com`. Used for generating links in emails and API responses.
+</ParamField>
+
+<ParamField path="APP_TIMEZONE" default="UTC" type="string">
+  Timezone for scheduled speedtests. Accepts any valid PHP timezone string, e.g. `America/New_York` or `Asia/Manila`.
+</ParamField>
+
+---
+
+## Database
+
+<ParamField path="DB_CONNECTION" default="mariadb" type="string">
+  Database driver. Accepted values: `sqlite`, `mariadb`, `mysql`, `pgsql`.
+</ParamField>
+
+<ParamField path="DB_HOST" type="string">
+  Hostname or IP address of your database server. Not required for `sqlite`. Use the LAN IP of your host — not `localhost` or `127.0.0.1` — as those resolve to the container itself.
+</ParamField>
+
+<ParamField path="DB_PORT" type="number">
+  Database port. Defaults to `3306` for MariaDB/MySQL and `5432` for PostgreSQL. Not required for `sqlite`.
+</ParamField>
+
+<ParamField path="DB_DATABASE" default="zepeed" type="string">
+  Database name. For `sqlite`, this is the path to the file inside the container — leave unset to use the default at `/var/www/html/database/database.sqlite`.
+</ParamField>
+
+<ParamField path="DB_USERNAME" type="string">
+  Database username. Not required for `sqlite`.
+</ParamField>
+
+<ParamField path="DB_PASSWORD" type="string">
+  Database password. Not required for `sqlite`.
+</ParamField>
+
+---
+
+## WebSockets
+
+<ParamField path="PUSHER_APP_ID" default="zepeed" type="string">
+  Internal WebSocket app identifier. Any non-empty string.
+</ParamField>
+
+<ParamField path="PUSHER_APP_KEY" default="zepeed_key" type="string">
+  WebSocket client key. Any non-empty string.
+</ParamField>
+
+<ParamField path="PUSHER_APP_SECRET" type="string" required>
+  Shared secret between the app and the WebSocket server. Set this to any strong random string — it never leaves your host.
+</ParamField>
+
+<ParamField path="PUSHER_HOST" default="127.0.0.1" type="string">
+  Hostname the **browser** uses to reach the WebSocket server. For a local setup use your host's LAN IP. Behind a reverse proxy use your domain name.
+</ParamField>
+
+<ParamField path="PUSHER_PORT" default="6001" type="number">
+  WebSocket server port.
+</ParamField>
+
+<ParamField path="PUSHER_SCHEME" default="http" type="string">
+  `http` for local setups. `https` when behind a TLS-terminating reverse proxy.
+</ParamField>
+
+---
+
+## Default Admin Account
+
+<ParamField path="DEFAULT_ADMIN_NAME" default="Zepeed Admin" type="string">
+  Display name for the first admin account created on initial boot.
+</ParamField>
+
+<ParamField path="DEFAULT_ADMIN_EMAIL" default="admin@zepeed.local" type="string">
+  Login email for the first admin account.
+</ParamField>
+
+<ParamField path="DEFAULT_ADMIN_PASSWORD" type="string" required>
+  Password for the first admin account. Must be at least 8 characters. The account creation step is skipped automatically on every subsequent restart — this value is only used once.
+</ParamField>

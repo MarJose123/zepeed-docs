@@ -19,10 +19,11 @@
             "group": "Installation",
             "pages": [
               "using-docker-compose",
-              "docker-image"
+              "using-docker-image"
             ]
           },
-          "Providers-and-schedule"
+          "Providers-and-schedule",
+          "environment"
         ]
       },
       {
@@ -31,7 +32,8 @@
           "contribute-to-app",
           "contribute-to-update-docs"
         ]
-      }
+      },
+      "troubleshooting"
     ]
   },
   "navbar": {

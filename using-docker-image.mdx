@@ -1,0 +1,234 @@
+---
+title: "Using Docker Image"
+sidebarTitle: "Using Docker Image"
+description: "Deploy Zepeed using Docker on Proxmox, CasaOS, Ubuntu, or any homelab running Docker Engine 24+."
+---
+
+## Requirements
+
+<CardGroup cols={2}>
+  <Card title="Docker Engine 24+" icon="box">
+    Install via `curl -fsSL https://get.docker.com | sh`
+  </Card>
+
+  <Card title="MariaDB 10.6+ or 11.x" icon="database">
+    An existing external MariaDB instance is required
+  </Card>
+
+  <Card title="1 GB RAM minimum" icon="microchip">
+    2 GB recommended for production use
+  </Card>
+
+  <Card title="4 GB Disk" icon="hard-drive">
+    For the container image and persistent volumes
+  </Card>
+</CardGroup>
+
+---
+
+## Installation
+
+<Note>
+  Docker run commands assume you already have a database installed and configured. SQLite is fine for most installs, but you can also use more traditional relational databases like MariaDB, MySQL, and PostgreSQL. See [Environment Variables](/getting-started/environment-variables#database) for the available `DB_CONNECTION` drivers and their connection parameters.
+</Note>
+
+<Steps>
+  <Step title="Prepare your database">
+    Connect to your MariaDB instance and create the database and user:
+
+    ```sql
+        CREATE DATABASE zepeed CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+        CREATE USER 'zepeed'@'%' IDENTIFIED BY 'your_strong_password';
+        GRANT ALL PRIVILEGES ON zepeed.* TO 'zepeed'@'%';
+        FLUSH PRIVILEGES;
+    ```
+
+    <Warning>
+      Use `'%'` as the host so the MariaDB user is reachable from inside the Docker container. `'localhost'` will not work because the container has its own network namespace.
+    </Warning>
+  </Step>
+  <Step title="Generate an application key">
+    ```bash
+        echo "base64:$(openssl rand -base64 32 2>/dev/null)"
+    ```
+
+    Copy the full output — it starts with `base64:`. You will use it as `APP_KEY` in the next step.
+  </Step>
+  <Step title="Run the container">
+    <Tabs>
+      <Tab title="SQLite">
+        ```bash
+                docker run -d \
+                  --name zepeed \
+                  --restart unless-stopped \
+                  -p 8080:8080 \
+                  -e APP_KEY="base64:your_generated_key_here" \
+                  -e APP_URL="http://your-host:8080" \
+                  -e APP_TIMEZONE="UTC" \
+                  -e DB_CONNECTION="sqlite" \
+                  -e PUSHER_APP_ID="zepeed" \
+                  -e PUSHER_APP_KEY="zepeed_key" \
+                  -e PUSHER_APP_SECRET="your_ws_secret" \
+                  -e PUSHER_HOST="127.0.0.1" \
+                  -e PUSHER_PORT="6001" \
+                  -e PUSHER_SCHEME="http" \
+                  -e DEFAULT_ADMIN_NAME="Zepeed Admin" \
+                  -e DEFAULT_ADMIN_EMAIL="admin@zepeed.local" \
+                  -e DEFAULT_ADMIN_PASSWORD="your_admin_password" \
+                  -v zepeed-storage:/var/www/html/storage/app \
+                  -v zepeed-logs:/var/www/html/storage/logs \
+                  -v zepeed-db:/var/www/html/database \
+                  marjose123/zepeed:latest
+        ```
+      </Tab>
+      <Tab title="MariaDB">
+        ```bash
+                docker run -d \
+                  --name zepeed \
+                  --restart unless-stopped \
+                  -p 8080:8080 \
+                  -e APP_KEY="base64:your_generated_key_here" \
+                  -e APP_URL="http://your-host:8080" \
+                  -e APP_TIMEZONE="UTC" \
+                  -e DB_CONNECTION="mariadb" \
+                  -e DB_HOST="your-mariadb-host" \
+                  -e DB_PORT="3306" \
+                  -e DB_DATABASE="zepeed" \
+                  -e DB_USERNAME="zepeed" \
+                  -e DB_PASSWORD="your_strong_password" \
+                  -e PUSHER_APP_ID="zepeed" \
+                  -e PUSHER_APP_KEY="zepeed_key" \
+                  -e PUSHER_APP_SECRET="your_ws_secret" \
+                  -e PUSHER_HOST="127.0.0.1" \
+                  -e PUSHER_PORT="6001" \
+                  -e PUSHER_SCHEME="http" \
+                  -e DEFAULT_ADMIN_NAME="Zepeed Admin" \
+                  -e DEFAULT_ADMIN_EMAIL="admin@zepeed.local" \
+                  -e DEFAULT_ADMIN_PASSWORD="your_admin_password" \
+                  -v zepeed-storage:/var/www/html/storage/app \
+                  -v zepeed-logs:/var/www/html/storage/logs \
+                  marjose123/zepeed:latest
+        ```
+      </Tab>
+      <Tab title="MySQL">
+        ```bash
+                docker run -d \
+                  --name zepeed \
+                  --restart unless-stopped \
+                  -p 8080:8080 \
+                  -e APP_KEY="base64:your_generated_key_here" \
+                  -e APP_URL="http://your-host:8080" \
+                  -e APP_TIMEZONE="UTC" \
+                  -e DB_CONNECTION="mysql" \
+                  -e DB_HOST="your-mysql-host" \
+                  -e DB_PORT="3306" \
+                  -e DB_DATABASE="zepeed" \
+                  -e DB_USERNAME="zepeed" \
+                  -e DB_PASSWORD="your_strong_password" \
+                  -e PUSHER_APP_ID="zepeed" \
+                  -e PUSHER_APP_KEY="zepeed_key" \
+                  -e PUSHER_APP_SECRET="your_ws_secret" \
+                  -e PUSHER_HOST="127.0.0.1" \
+                  -e PUSHER_PORT="6001" \
+                  -e PUSHER_SCHEME="http" \
+                  -e DEFAULT_ADMIN_NAME="Zepeed Admin" \
+                  -e DEFAULT_ADMIN_EMAIL="admin@zepeed.local" \
+                  -e DEFAULT_ADMIN_PASSWORD="your_admin_password" \
+                  -v zepeed-storage:/var/www/html/storage/app \
+                  -v zepeed-logs:/var/www/html/storage/logs \
+                  marjose123/zepeed:latest
+        ```
+      </Tab>
+      <Tab title="PostgreSQL">
+        ```bash
+                docker run -d \
+                  --name zepeed \
+                  --restart unless-stopped \
+                  -p 8080:8080 \
+                  -e APP_KEY="base64:your_generated_key_here" \
+                  -e APP_URL="http://your-host:8080" \
+                  -e APP_TIMEZONE="UTC" \
+                  -e DB_CONNECTION="pgsql" \
+                  -e DB_HOST="your-postgres-host" \
+                  -e DB_PORT="5432" \
+                  -e DB_DATABASE="zepeed" \
+                  -e DB_USERNAME="zepeed" \
+                  -e DB_PASSWORD="your_strong_password" \
+                  -e PUSHER_APP_ID="zepeed" \
+                  -e PUSHER_APP_KEY="zepeed_key" \
+                  -e PUSHER_APP_SECRET="your_ws_secret" \
+                  -e PUSHER_HOST="127.0.0.1" \
+                  -e PUSHER_PORT="6001" \
+                  -e PUSHER_SCHEME="http" \
+                  -e DEFAULT_ADMIN_NAME="Zepeed Admin" \
+                  -e DEFAULT_ADMIN_EMAIL="admin@zepeed.local" \
+                  -e DEFAULT_ADMIN_PASSWORD="your_admin_password" \
+                  -v zepeed-storage:/var/www/html/storage/app \
+                  -v zepeed-logs:/var/www/html/storage/logs \
+                  marjose123/zepeed:latest
+        ```
+      </Tab>
+    </Tabs>
+
+    See [Environment Variables](/getting-started/environment-variables) for a full description of every option.
+  </Step>
+  <Step title="Follow the first-boot logs">
+    ```bash
+        docker logs -f zepeed
+    ```
+
+    Wait until you see: `[default-account] Default admin account created: admin@zepeed.local`
+
+    This confirms that migrations ran successfully and the admin account is ready.
+  </Step>
+  <Step title="Open in your browser">
+    Navigate to `http://your-host:8080` and log in with the `DEFAULT_ADMIN_EMAIL` and `DEFAULT_ADMIN_PASSWORD` you set in step 3.
+
+    <Check>
+      Change your password immediately after first login via **Profile Settings**.
+    </Check>
+  </Step>
+</Steps>
+
+---
+
+## Updating
+
+```bash
+docker pull marjose123/zepeed:latest
+docker stop zepeed && docker rm zepeed
+```
+
+Re-run the same `docker run` command from step 3. Migrations run automatically on startup. Your volumes (`zepeed-storage`, `zepeed-logs`) persist across updates.
+
+<Tip>
+  To pin a specific version replace `:latest` with a version tag, e.g. `marjose123/zepeed:1.2.0`.
+</Tip>
+
+---
+
+## Useful Commands
+
+<CodeGroup>
+
+```bash View live logs
+docker logs -f zepeed
+```
+
+```bash Open Artisan shell
+docker exec -it zepeed php artisan tinker
+```
+
+```bash Check container health
+docker inspect --format='{{.State.Health.Status}}' zepeed
+```
+
+```bash Stop the container
+docker stop zepeed
+```
+
+```bash Remove the container
+docker rm zepeed
+```
+
+</CodeGroup>

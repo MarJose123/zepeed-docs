@@ -1,0 +1,36 @@
+---
+title: "Troubleshooting"
+sidebarTitle: "Troubleshooting"
+description: "Solutions to common issues when deploying and running Zepeed with Docker."
+---
+
+<AccordionGroup>
+  <Accordion title="Container exits immediately">
+    ```bash
+        docker logs zepeed
+    ```
+
+    The most common cause is a missing or malformed `APP_KEY`. Regenerate it and recreate the container:
+
+    ```bash
+        echo "base64:$(openssl rand -base64 32 2>/dev/null)"
+    ```
+  </Accordion>
+
+  <Accordion title="Database connection refused">
+    - Confirm `DB_HOST` is the IP or hostname reachable from inside the container. `localhost` or `127.0.0.1` refers to the **container itself** — use your host's LAN IP or the database container name instead.
+    - Confirm the database user was created with `'%'` as the host, not `'localhost'`.
+  </Accordion>
+
+  <Accordion title="Default admin account not created">
+    ```bash
+        docker logs zepeed | grep "default-account"
+    ```
+
+    If you see a validation error, `DEFAULT_ADMIN_PASSWORD` is either missing or fewer than 8 characters. Set a valid value and recreate the container.
+  </Accordion>
+
+  <Accordion title="WebSocket not connecting">
+    `PUSHER_HOST` must be the address the **browser** can reach, not the container address. For a local setup set it to your host's LAN IP. Behind a reverse proxy set it to your domain and configure the proxy to forward the `/app` path to port `6001`.
+  </Accordion>
+</AccordionGroup>

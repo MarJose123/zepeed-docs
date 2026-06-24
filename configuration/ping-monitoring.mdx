@@ -1,0 +1,119 @@
+---
+title: "Ping and latency monitoring"
+description: "Track connection latency with continuous ping tests, independent of full speedtests."
+sidebarTitle: "Ping monitoring"
+---
+
+Ping monitoring lets Zepeed check the latency of your internet connection on its own schedule, without running a full speedtest. Use it to spot brief outages, jitter spikes, or routing issues that a once-an-hour speedtest would miss.
+
+## Why monitor ping separately
+
+Full speedtests are heavy: they saturate your link, take 30–60 seconds, and consume data. You usually run them every 15 minutes or hourly. Ping tests are lightweight — a few small packets — so you can run them every minute or two without affecting your network.
+
+Use ping monitoring to answer:
+
+- Is my connection up **right now**?
+- How much **jitter** am I seeing throughout the day?
+- Are there short outages between scheduled speedtests?
+- Which hops are slow when latency spikes?
+
+## How it works
+
+Zepeed sends ICMP echo or TCP probes to one or more targets on a schedule you define. Each probe records:
+
+- **Round-trip time (ms)** — The latency for that probe.
+- **Packet loss** — Percentage of probes that did not return.
+- **Jitter** — Variation in round-trip time across recent probes.
+- **Status** — `up`, `down`, or `degraded` based on your thresholds.
+
+Results are stored alongside speedtest history so you can correlate latency spikes with bandwidth drops.
+
+## Configure ping targets
+
+<Steps>
+  <Step title="Open Settings">
+    From the dashboard, click your profile menu and select **Settings**.
+  </Step>
+  <Step title="Go to Ping Monitoring">
+    Click **Ping Monitoring** in the sidebar.
+  </Step>
+  <Step title="Add a target">
+    Click **New Target** and fill in:
+
+    - **Name** — A label (e.g., `Cloudflare DNS`, `Gateway`).
+    - **Host** — Hostname or IP to probe (e.g., `1.1.1.1`, `8.8.8.8`, `google.com`).
+    - **Interval** — How often to probe (e.g., every 60 seconds).
+    - **Timeout** — How long to wait for a reply (default 2s).
+    - **Probe type** — ICMP (default) or TCP on a specific port.
+  </Step>
+  <Step title="Set thresholds (optional)">
+    Configure when to mark the target as `degraded` or `down`:
+
+    - **Latency threshold** — e.g., warn above 100 ms.
+    - **Packet loss threshold** — e.g., alert above 5%.
+    - **Consecutive failures** — How many failed probes before marking `down`.
+  </Step>
+  <Step title="Save">
+    Save the target. Probes begin on the next scheduled interval.
+  </Step>
+</Steps>
+
+## Recommended targets
+
+<CardGroup cols={2}>
+  <Card title="Your gateway">
+    Probe your router or modem's LAN IP (e.g., `192.168.1.1`) to confirm your local network is healthy.
+  </Card>
+
+  <Card title="Public DNS">
+    Probe `1.1.1.1` (Cloudflare) or `8.8.8.8` (Google) to test reachability beyond your ISP.
+  </Card>
+
+  <Card title="ISP gateway">
+    Probe your ISP's first hop to isolate whether issues are inside or outside their network.
+  </Card>
+
+  <Card title="Critical services">
+    Probe a service you depend on (work VPN, game server, video conferencing endpoint) to track real-world impact.
+  </Card>
+</CardGroup>
+
+## View results
+
+From **Dashboard → Ping Monitoring** you can:
+
+- See live status (`up`, `degraded`, `down`) per target.
+- View latency and packet-loss graphs over the last hour, day, or week.
+- Compare ping history against speedtest history on the same timeline.
+- Export raw probe data via the [API](/api-reference).
+
+## Notifications
+
+Ping thresholds can trigger the same notification channels as speedtests:
+
+- **Webhooks** — See [Webhooks](/configuration/webhooks).
+- **Email** — See [Email notifications](/configuration/email-notifications).
+
+Typical alerts include `target.down`, `target.recovered`, and `target.degraded`.
+
+## Best practices
+
+- **Probe multiple targets.** A single target can't distinguish between ISP issues and target-host issues.
+- **Keep intervals reasonable.** Probing every second adds load without much extra insight. Every 30–60 seconds is usually enough.
+- **Tune thresholds to your link.** Fiber and cable behave differently — set thresholds based on your normal baseline, not absolute numbers.
+- **Pair with maintenance windows.** Pause noisy alerts during planned outages with [maintenance windows](/configuration/maintenance-windows).
+- **Correlate with speedtests.** When a speedtest fails, check the ping history around the same time to see whether the link dropped or the provider's server was unreachable.
+
+## Troubleshooting
+
+- **ICMP blocked?** Some networks block ICMP. Switch the target to TCP on port 443 or 80 to probe reachability instead.
+- **High latency on every target?** The issue is likely on your side of the link — router, Wi-Fi, or local congestion.
+- **High latency on one target only?** The issue is likely with that host or the path to it, not your connection.
+- **No data showing?** Confirm the Zepeed container has outbound network access and the scheduler is running. See [Troubleshooting](/troubleshooting).
+
+## Related pages
+
+- [Providers and schedule](/Providers-and-schedule)
+- [Webhooks](/configuration/webhooks)
+- [Email notifications](/configuration/email-notifications)
+- [Maintenance windows](/configuration/maintenance-windows)

@@ -1,0 +1,157 @@
+---
+title: "API reference"
+description: "Programmatic access to Zepeed speedtest data and configuration."
+sidebarTitle: "API reference"
+---
+
+Zepeed exposes a REST API that lets you fetch test results, trigger speedtests, and manage schedules from external systems. Use it to build custom dashboards, export data, or integrate Zepeed into existing automation.
+
+<Warning>
+  The API is under active development. Endpoints and response shapes may change between releases. Pin to a known Zepeed version in production integrations.
+</Warning>
+
+## Find the API docs in Zepeed
+
+Zepeed ships with interactive API documentation served directly from your running instance. The docs route is **public** — you do not need to sign in to view it. Open it to browse every endpoint and view request/response schemas. Sign in (or use a token) only when you want to send live requests.
+
+<Steps>
+  <Step title="Open the API docs">
+    In a browser, go directly to:
+
+    ```text
+    https://your-zepeed-host/api/docs
+    ```
+
+    No authentication is required to view the documentation.
+  </Step>
+  <Step title="Authorize to try requests (optional)">
+    To send live requests with **Try it out**, click **Authorize** at the top of the page and paste a Bearer token. See [Authentication](#authentication) below for how to generate one.
+  </Step>
+</Steps>
+
+<Note>
+  The in-app API docs always reflect the version of Zepeed you are running. If an endpoint shown there differs from this page, trust the in-app docs.
+</Note>
+
+## Base URL
+
+The API is served from the same host as the Zepeed dashboard:
+
+```text
+https://your-zepeed-host/api
+```
+
+All requests and responses use JSON.
+
+## Authentication
+
+Zepeed uses Laravel Fortify-issued API tokens. Generate a personal token from the dashboard, then include it on every request:
+
+<Steps>
+  <Step title="Open Settings">
+    From the dashboard, click your profile menu and select **Settings → API Tokens**.
+  </Step>
+  <Step title="Create a token">
+    Click **Create Token**, give it a descriptive name, and copy the value shown. You will not be able to view it again.
+  </Step>
+  <Step title="Send the token">
+    Include the token as a Bearer credential on every request:
+
+    ```bash
+    curl -H "Authorization: Bearer <your-token>" \
+         -H "Accept: application/json" \
+         https://your-zepeed-host/api/speedtests
+    ```
+  </Step>
+</Steps>
+
+<Note>
+  Treat tokens like passwords. Revoke any token that may have been exposed from **Settings → API Tokens**.
+</Note>
+
+## Common endpoints
+
+The following endpoints cover the most common use cases. Refer to the running app's `/api` routes for the full surface.
+
+### List speedtest results
+
+```http
+GET /api/speedtests
+```
+
+Query parameters:
+
+- `provider` — Filter by provider (`ookla`, `librespeed`, `cloudflare`, `fast`).
+- `from` / `to` — ISO-8601 date range.
+- `limit` — Page size (default 50).
+
+### Get a single result
+
+```http
+GET /api/speedtests/{id}
+```
+
+### Trigger a speedtest
+
+```http
+POST /api/speedtests
+Content-Type: application/json
+
+{
+  "provider": "ookla"
+}
+```
+
+Returns the queued test ID. Poll `GET /api/speedtests/{id}` for the result.
+
+### List schedules
+
+```http
+GET /api/schedules
+```
+
+### Create a schedule
+
+```http
+POST /api/schedules
+Content-Type: application/json
+
+{
+  "name": "Hourly Ookla",
+  "provider": "ookla",
+  "cron": "0 * * * *"
+}
+```
+
+## Response format
+
+Successful responses follow a consistent shape:
+
+```json
+{
+  "data": { ... },
+  "meta": {
+    "page": 1,
+    "per_page": 50,
+    "total": 128
+  }
+}
+```
+
+Error responses use standard HTTP status codes with a JSON body:
+
+```json
+{
+  "message": "Unauthenticated."
+}
+```
+
+## Rate limits
+
+The default Laravel rate limit applies (60 requests per minute per token). Override it in your environment if you need higher throughput.
+
+## Related pages
+
+- [Webhooks](/configuration/webhooks) — Push results instead of polling.
+- [Providers and schedule](/Providers-and-schedule) — Configure what the API exposes.
+- [Environment variables](/environment) — Tune API behavior.

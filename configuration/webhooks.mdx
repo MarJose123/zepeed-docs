@@ -1,0 +1,88 @@
+---
+title: "Webhooks"
+description: "Send speedtest results to external systems via HTTP webhooks."
+sidebarTitle: "Webhooks"
+---
+
+Webhooks let Zepeed push speedtest results and event notifications to any HTTP endpoint in real time. Use them to forward results to Slack, Discord, PagerDuty, n8n, Home Assistant, or your own monitoring stack.
+
+## How webhooks work
+
+When a speedtest run completes — successfully or with a failure — Zepeed sends an HTTP `POST` request to each configured webhook URL with a JSON payload describing the result. Your endpoint receives the payload and can react however you like.
+
+## Prerequisites
+
+- Zepeed is installed and running. See [Using Docker Compose](/using-docker-compose).
+- At least one provider is enabled. See [Providers and schedule](/Providers-and-schedule).
+- A reachable HTTP(S) endpoint that can accept JSON `POST` requests.
+
+## Add a webhook
+
+<Steps>
+  <Step title="Open Settings">
+    From the dashboard, click your profile menu and select **Settings**.
+  </Step>
+  <Step title="Go to Webhooks">
+    In the Settings sidebar, click **Webhooks**.
+  </Step>
+  <Step title="Create a webhook">
+    Click **New Webhook** and fill in:
+
+    - **Name** — A label that identifies the integration (e.g., `Slack alerts`).
+    - **URL** — The full HTTPS endpoint that should receive events.
+    - **Events** — Which events to send (test completed, test failed, etc.).
+  </Step>
+  <Step title="Save and test">
+    Save the webhook, then trigger a manual speedtest to confirm your endpoint receives the payload.
+  </Step>
+</Steps>
+
+## Example payload
+
+A typical `test.completed` payload looks like:
+
+```json
+{
+  "event": "test.completed",
+  "timestamp": "2026-06-24T12:00:00Z",
+  "data": {
+    "id": "01HXYZ...",
+    "provider": "ookla",
+    "download_mbps": 942.3,
+    "upload_mbps": 41.8,
+    "ping_ms": 6.4,
+    "jitter_ms": 0.9,
+    "server": "Manila, PH",
+    "status": "success"
+  }
+}
+```
+
+<Note>
+  Field names may vary depending on the provider. Always treat unknown fields as optional in your consumer.
+</Note>
+
+## Integration examples
+
+<Tabs>
+  <Tab title="Slack">
+    Create an [Incoming Webhook](https://api.slack.com/messaging/webhooks) in Slack, then paste the URL into Zepeed. Use a relay service or middleware if you need to reshape the payload into Slack's format.
+  </Tab>
+  <Tab title="Discord">
+    Use a Discord channel webhook URL. Discord expects a `content` field, so you may need a small proxy (n8n, Pipedream, or a Cloudflare Worker) to transform the payload.
+  </Tab>
+  <Tab title="Home Assistant">
+    Point the webhook at `https://your-ha.local/api/webhook/<id>` and react to the event with an automation.
+  </Tab>
+  <Tab title="Custom endpoint">
+    Accept the JSON body in your service and store, alert, or transform as needed. Validate the payload before acting on it.
+  </Tab>
+</Tabs>
+
+## Troubleshooting
+
+- **No requests received?** Verify the URL is reachable from the Zepeed container and that any firewall or reverse proxy allows the outbound request.
+- **TLS errors?** Make sure the endpoint uses a valid certificate. Self-signed certificates may be rejected.
+- **Retries?** Failed deliveries may be retried automatically. Check Zepeed logs for delivery attempts.
+
+See [Troubleshooting](/troubleshooting) for additional help.

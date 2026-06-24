@@ -1,0 +1,113 @@
+---
+title: "Email notifications"
+description: "Configure email delivery for speedtest results and alerts."
+sidebarTitle: "Email notifications"
+---
+
+Zepeed can email speedtest results and failure alerts using any standard mail transport. Configure your provider through environment variables, then enable email notifications from the dashboard.
+
+## Supported mail transports
+
+Zepeed supports the standard Laravel mail drivers:
+
+- **SMTP** — Any SMTP-compatible server (Gmail, Office 365, Zoho, Fastmail, your own MTA)
+- **Mailgun**
+- **Postmark**
+- **Amazon SES**
+- **Resend**
+- **Sendmail** (local)
+- **Log** (for testing)
+
+## Configure the mail transport
+
+Mail is configured via environment variables. See [Environment Variables](/environment) for the full list.
+
+<Tabs>
+  <Tab title="SMTP">
+    ```bash
+    MAIL_MAILER=smtp
+    MAIL_HOST=smtp.example.com
+    MAIL_PORT=587
+    MAIL_USERNAME=your-user
+    MAIL_PASSWORD=your-password
+    MAIL_ENCRYPTION=tls
+    MAIL_FROM_ADDRESS="zepeed@example.com"
+    MAIL_FROM_NAME="Zepeed"
+    ```
+  </Tab>
+  <Tab title="Mailgun">
+    ```bash
+    MAIL_MAILER=mailgun
+    MAILGUN_DOMAIN=mg.example.com
+    MAILGUN_SECRET=key-xxxxxxxxxxxxxxxx
+    MAILGUN_ENDPOINT=api.mailgun.net
+    MAIL_FROM_ADDRESS="zepeed@example.com"
+    MAIL_FROM_NAME="Zepeed"
+    ```
+  </Tab>
+  <Tab title="Postmark">
+    ```bash
+    MAIL_MAILER=postmark
+    POSTMARK_TOKEN=xxxxxxxxxxxxxxxx
+    MAIL_FROM_ADDRESS="zepeed@example.com"
+    MAIL_FROM_NAME="Zepeed"
+    ```
+  </Tab>
+  <Tab title="Amazon SES">
+    ```bash
+    MAIL_MAILER=ses
+    AWS_ACCESS_KEY_ID=AKIAxxxxxxxxxxxx
+    AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxx
+    AWS_DEFAULT_REGION=us-east-1
+    MAIL_FROM_ADDRESS="zepeed@example.com"
+    MAIL_FROM_NAME="Zepeed"
+    ```
+  </Tab>
+</Tabs>
+
+Restart the container after changing environment variables:
+
+```bash
+docker compose restart
+```
+
+## Enable email notifications
+
+<Steps>
+  <Step title="Open Settings">
+    From the dashboard, click your profile menu and select **Settings**.
+  </Step>
+  <Step title="Go to Notifications">
+    Click **Notifications** in the sidebar.
+  </Step>
+  <Step title="Enable email">
+    Toggle email notifications on and enter the recipient address(es).
+  </Step>
+  <Step title="Choose events">
+    Pick which events trigger an email — typically test completed and/or test failed.
+  </Step>
+  <Step title="Send a test email">
+    Use the **Send test email** button to verify delivery before relying on notifications.
+  </Step>
+</Steps>
+
+## Customize email templates
+
+Zepeed ships with default email templates for test results and failure alerts. You can override them with your own content from **Settings → Email Templates**:
+
+- **Subject** — Use template variables like `{{ provider }}` and `{{ download_mbps }}`.
+- **Body** — Markdown or HTML. Reference the same variables to include speedtest data.
+- **Recipient list** — One or more email addresses per template.
+
+<Tip>
+  Keep templates short. Long HTML emails are more likely to be flagged as spam.
+</Tip>
+
+## Troubleshooting
+
+- **Emails not arriving?** Check your spam folder, then review Zepeed logs for SMTP errors.
+- **Authentication failed?** Re-verify `MAIL_USERNAME` and `MAIL_PASSWORD`. For Gmail, use an [App Password](https://support.google.com/accounts/answer/185833).
+- **Connection refused?** Confirm `MAIL_HOST` and `MAIL_PORT` are reachable from the Zepeed container.
+- **From address rejected?** Many providers require the `MAIL_FROM_ADDRESS` to be a verified sender on the domain.
+
+See [Troubleshooting](/troubleshooting) for more.

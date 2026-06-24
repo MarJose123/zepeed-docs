@@ -35,7 +35,19 @@
           "source-code",
           ""
         ]
-      }
+      },
+      {
+        "group": "Configuration",
+        "icon": "brain-cog",
+        "pages": [
+          "configuration/webhooks.mdx",
+          "configuration/email-notifications.mdx",
+          "configuration/maintenance-windows.mdx",
+          "configuration/ping-monitoring.mdx"
+        ]
+      },
+      "api-reference.mdx",
+      "local-development.mdx"
     ]
   },
   "navbar": {

@@ -1,0 +1,76 @@
+---
+title: "Maintenance windows"
+description: "Pause scheduled speedtests during planned maintenance or known network outages."
+sidebarTitle: "Maintenance windows"
+---
+
+Maintenance windows tell Zepeed to skip scheduled speedtests during defined time ranges. Use them to avoid noisy alerts and skewed metrics during ISP maintenance, planned router reboots, or any period when your connection is intentionally down.
+
+## How it works
+
+During an active maintenance window:
+
+- Scheduled tests are **skipped** — they do not execute and do not appear as failures.
+- Manual test runs are **still allowed** unless you choose to block them.
+- Notifications (webhooks, email) for skipped runs are suppressed.
+
+Once the window ends, the regular schedule resumes automatically.
+
+## Create a maintenance window
+
+<Steps>
+  <Step title="Open Settings">
+    From the dashboard, click your profile menu and select **Settings**.
+  </Step>
+  <Step title="Go to Maintenance Windows">
+    Click **Maintenance Windows** in the sidebar.
+  </Step>
+  <Step title="Create a window">
+    Click **New Maintenance Window** and fill in:
+
+    - **Name** — Describe the purpose (e.g., `ISP overnight maintenance`).
+    - **Start** — Date and time the window begins.
+    - **End** — Date and time the window ends.
+    - **Recurrence** (optional) — One-time, daily, weekly, or custom.
+    - **Scope** (optional) — Apply to all schedules or to specific schedules/providers.
+  </Step>
+  <Step title="Save">
+    Click **Save**. The window takes effect immediately.
+  </Step>
+</Steps>
+
+## Common use cases
+
+<CardGroup cols={2}>
+  <Card title="Overnight ISP maintenance">
+    Block tests every night between 2:00 and 4:00 AM when your provider performs routine maintenance.
+  </Card>
+
+  <Card title="Weekly router reboot">
+    Schedule a short weekly window when your router or modem auto-reboots.
+  </Card>
+
+  <Card title="Planned outage">
+    Create a one-time window during a scheduled service interruption to avoid false failure alerts.
+  </Card>
+
+  <Card title="Travel / offline periods">
+    Pause all tests while you are away and the site is intentionally offline.
+  </Card>
+</CardGroup>
+
+## Manage windows
+
+- **Edit** — Click any window to update its time range or scope.
+- **Disable** — Toggle a window off without deleting it.
+- **Delete** — Remove a window you no longer need.
+
+<Note>
+  Maintenance windows do not delete or hide historical test data — they only prevent new tests from running during the window.
+</Note>
+
+## Related pages
+
+- [Providers and schedule](/Providers-and-schedule)
+- [Webhooks](/configuration/webhooks)
+- [Email notifications](/configuration/email-notifications)

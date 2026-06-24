@@ -1,0 +1,106 @@
+---
+title: "Local development"
+description: "Run Zepeed locally for development without Docker."
+sidebarTitle: "Local development"
+---
+
+This guide is for contributors who want to run Zepeed from source on their own machine. If you just want to deploy Zepeed, use [Using Docker Compose](/using-docker-compose) instead.
+
+## Requirements
+
+- **PHP 8.4\+**
+- **Composer**
+- **Bun** (for the Vue/Vite frontend)
+- **Docker Desktop** or **OrbStack** (for the database and supporting services)
+- **Git**
+
+## Clone and install
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/marjose123/zepeed.git
+    cd zepeed
+    ```
+  </Step>
+  <Step title="Install PHP dependencies">
+    ```bash
+    composer install
+    ```
+  </Step>
+  <Step title="Install frontend dependencies">
+    ```bash
+    bun install
+    ```
+  </Step>
+  <Step title="Configure environment">
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
+
+    Adjust database, mail, and provider settings in `.env`. See [Environment Variables](/environment) for the full reference.
+  </Step>
+  <Step title="Run database migrations">
+    ```bash
+    php artisan migrate
+    ```
+  </Step>
+  <Step title="Start dev servers">
+    Run the Laravel app and Vite dev server in parallel:
+
+    ```bash
+    php artisan serve
+    bun run dev
+    ```
+
+    Then open [http://localhost:8000](http://localhost:8000).
+  </Step>
+</Steps>
+
+## Useful Composer scripts
+
+Zepeed ships with helper scripts that combine formatters, linters, and tests.
+
+| Command | What it does |
+| --- | --- |
+| `composer run format` | Run Pint (PHP), Prettier, and ESLint fixes. |
+| `composer run analyse` | Run PHPStan static analysis. |
+| `composer run rector` | Apply Rector refactorings. |
+| `composer run test` | Run the PHPUnit test suite. |
+
+Run all four before opening a pull request.
+
+## Tech stack
+
+- **Backend** — Laravel 13, Fortify, Inertia.js (Laravel adapter)
+- **Frontend** — Vue 3, shadcn/vue (reka-ui), Tailwind CSS v4
+- **Tooling** — Vite, TypeScript, ESLint, Prettier, Pint, PHPStan, Rector
+- **Extras** — Mailpit, Soketi/Reverb-ready scripts
+
+## Speedtest provider CLIs
+
+Zepeed shells out to the official provider CLIs. When running locally outside Docker you may need to install them yourself:
+
+- [`ookla/speedtest-cli`](https://www.speedtest.net/apps/cli)
+- [`librespeed/speedtest-cli`](https://github.com/librespeed/speedtest-cli)
+- [`mikkelam/fast-cli`](https://github.com/mikkelam/fast-cli)
+- [`kavehtehrani/cloudflare-speed-cli`](https://github.com/kavehtehrani/cloudflare-speed-cli)
+
+The Docker image bundles all four — prefer Docker if you do not want to manage these manually.
+
+## Tests and CI
+
+The repository runs three GitHub Actions workflows on every push:
+
+- **API tests** — PHPUnit suite against the HTTP API.
+- **PHPStan** — Static analysis.
+- **Code style** — Pint, Prettier, ESLint.
+
+All three must pass before a PR can be merged. Run `composer run format`, `composer run analyse`, and `composer run test` locally to catch issues early.
+
+## Related pages
+
+- [Contribute](/contribute)
+- [Using Docker Compose](/using-docker-compose)
+- [Environment Variables](/environment)

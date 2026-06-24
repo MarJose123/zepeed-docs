@@ -56,31 +56,6 @@ description: "Deploy Zepeed using Docker on Proxmox, CasaOS, Ubuntu, or any home
   </Step>
   <Step title="Run the container">
     <Tabs>
-      <Tab title="SQLite">
-        ```bash
-                docker run -d \
-                  --name zepeed \
-                  --restart unless-stopped \
-                  -p 8080:8080 \
-                  -e APP_KEY="base64:your_generated_key_here" \
-                  -e APP_URL="http://your-host:8080" \
-                  -e APP_TIMEZONE="UTC" \
-                  -e DB_CONNECTION="sqlite" \
-                  -e PUSHER_APP_ID="zepeed" \
-                  -e PUSHER_APP_KEY="zepeed_key" \
-                  -e PUSHER_APP_SECRET="your_ws_secret" \
-                  -e PUSHER_HOST="127.0.0.1" \
-                  -e PUSHER_PORT="6001" \
-                  -e PUSHER_SCHEME="http" \
-                  -e DEFAULT_ADMIN_NAME="Zepeed Admin" \
-                  -e DEFAULT_ADMIN_EMAIL="admin@zepeed.local" \
-                  -e DEFAULT_ADMIN_PASSWORD="your_admin_password" \
-                  -v zepeed-storage:/var/www/html/storage/app \
-                  -v zepeed-logs:/var/www/html/storage/logs \
-                  -v zepeed-db:/var/www/html/database \
-                  marjose123/zepeed:latest
-        ```
-      </Tab>
       <Tab title="MariaDB">
         ```bash
                 docker run -d \

@@ -30,14 +30,6 @@
         ]
       },
       {
-        "group": "More",
-        "icon": "link",
-        "pages": [
-          "source-code",
-          "update-the-docs"
-        ]
-      },
-      {
         "group": "Configuration",
         "icon": "brain-cog",
         "pages": [
@@ -50,7 +42,15 @@
         ]
       },
       "api-reference",
-      "local-development"
+      "local-development",
+      {
+        "group": "More",
+        "icon": "link",
+        "pages": [
+          "source-code",
+          "update-the-docs"
+        ]
+      }
     ]
   },
   "navbar": {

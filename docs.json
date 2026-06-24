@@ -12,6 +12,8 @@
       "index",
       "features",
       "changelog",
+      "troubleshooting",
+      "contribute",
       {
         "group": "Getting Started",
         "pages": [
@@ -27,13 +29,13 @@
         ]
       },
       {
-        "group": "Contribute",
+        "group": "More",
+        "icon": "link",
         "pages": [
-          "contribute-to-app",
-          "contribute-to-update-docs"
+          "source-code",
+          ""
         ]
-      },
-      "troubleshooting"
+      }
     ]
   },
   "navbar": {

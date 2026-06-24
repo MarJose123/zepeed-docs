@@ -17,6 +17,7 @@
       {
         "group": "Getting Started",
         "pages": [
+          "quickstart.mdx",
           {
             "group": "Installation",
             "pages": [
@@ -40,14 +41,16 @@
         "group": "Configuration",
         "icon": "brain-cog",
         "pages": [
-          "configuration/webhooks.mdx",
-          "configuration/email-notifications.mdx",
-          "configuration/maintenance-windows.mdx",
-          "configuration/ping-monitoring.mdx"
+          "configuration/webhooks",
+          "configuration/email-notifications",
+          "configuration/maintenance-windows",
+          "configuration/ping-monitoring",
+          "configuration/dashboard",
+          "configuration/user-management"
         ]
       },
-      "api-reference.mdx",
-      "local-development.mdx"
+      "api-reference",
+      "local-development"
     ]
   },
   "navbar": {

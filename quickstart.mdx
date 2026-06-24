@@ -1,0 +1,117 @@
+---
+title: "Quickstart"
+sidebarTitle: "Quickstart"
+description: "Get Zepeed running and your first speedtest recorded in under 10 minutes."
+---
+
+This guide gets you from zero to a running Zepeed instance with a recorded speedtest in about 10 minutes. For deeper deployment options, see [Using Docker Compose](/using-docker-compose) or [Using Docker Image](/using-docker-image).
+
+## What you'll do
+
+1. Run Zepeed with Docker Compose
+2. Sign in to the dashboard
+3. Enable a speedtest provider
+4. Run your first test
+5. Schedule it to run automatically
+
+## Prerequisites
+
+- A host with **Docker Engine 24\+** and **Docker Compose**
+- Outbound internet access
+- ~10 minutes
+
+## 1. Start Zepeed
+
+From a working directory:
+
+```bash
+mkdir -p /opt/zepeed && cd /opt/zepeed
+
+curl -fsSL https://raw.githubusercontent.com/marjose123/zepeed/main/compose.prod.yml -o compose.prod.yml
+curl -fsSL https://raw.githubusercontent.com/marjose123/zepeed/main/.env.prod.example -o .env
+```
+
+Generate an `APP_KEY` and a `DEFAULT_ADMIN_PASSWORD`, then open `.env` and set:
+
+```bash
+APP_KEY=base64:...                    # from: docker run --rm marjose123/zepeed:latest php artisan key:generate --show
+APP_URL=http://<your-host-ip>:8080
+DEFAULT_ADMIN_EMAIL=you@example.com
+DEFAULT_ADMIN_PASSWORD=<strong-password>
+```
+
+Start the stack:
+
+```bash
+docker compose -f compose.prod.yml pull
+docker compose -f compose.prod.yml up -d
+```
+
+First boot takes about 60 seconds while migrations run.
+
+## 2. Sign in
+
+Open `APP_URL` in your browser and sign in with the `DEFAULT_ADMIN_EMAIL` and `DEFAULT_ADMIN_PASSWORD` you set in step 1.
+
+<Tip>
+  Change the default password under **Profile Settings** as soon as you log in.
+</Tip>
+
+## 3. Enable a provider
+
+<Steps>
+  <Step title="Open Settings → Providers">
+    Click your profile menu → **Settings** → **Providers**.
+  </Step>
+  <Step title="Enable Speedtest Ookla">
+    Click **Enable** next to **Speedtest Ookla**. (You can enable LibreSpeed, Cloudflare, or Fast.com later.)
+  </Step>
+</Steps>
+
+For more, see [Providers and schedule](/Providers-and-schedule).
+
+## 4. Run your first test
+
+From the dashboard, click **Run Test**, choose the provider you just enabled, and wait ~30 seconds. You'll see download, upload, and ping values once it finishes — your first result is now recorded.
+
+## 5. Schedule automatic tests
+
+<Steps>
+  <Step title="Open Settings → Schedules">
+    Click **Schedules** in the Settings sidebar.
+  </Step>
+  <Step title="Create a schedule">
+    Click **New Schedule** and use these values to test hourly:
+
+    - **Name**: `Hourly Ookla`
+    - **Provider**: `Speedtest Ookla`
+    - **Cron expression**: `0 * * * *`
+  </Step>
+  <Step title="Save">
+    Save the schedule. Zepeed runs the next test at the top of the next hour.
+  </Step>
+</Steps>
+
+## What's next
+
+<CardGroup cols={2}>
+  <Card title="Webhooks" icon="bell" href="/configuration/webhooks">
+    Push results to Slack, Discord, or your own endpoint.
+  </Card>
+
+  <Card title="Email notifications" icon="envelope" href="/configuration/email-notifications">
+    Get test results and failure alerts by email.
+  </Card>
+
+  <Card title="Ping monitoring" icon="signal" href="/configuration/ping-monitoring">
+    Track latency continuously, not just on speedtests.
+  </Card>
+
+  <Card title="API reference" icon="code" href="/api-reference">
+    Pull results into your own dashboards.
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+Something didn't work? See [Troubleshooting](/troubleshooting) for fixes to the most common first-boot issues.

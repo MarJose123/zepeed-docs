@@ -1,0 +1,90 @@
+---
+title: "Dashboard"
+sidebarTitle: "Dashboard"
+description: "Read and interpret speedtest results, history, and trends from the Zepeed dashboard."
+---
+
+The dashboard is the main view in Zepeed. It shows your latest speedtest results, historical trends, and the status of each scheduled test — everything you need to spot connection issues at a glance.
+
+## Overview cards
+
+The top of the dashboard displays summary cards for the most recent test run:
+
+- **Download** — Latest measured download speed in Mbps.
+- **Upload** — Latest measured upload speed in Mbps.
+- **Ping** — Latency in milliseconds at the time of the test.
+- **Jitter** — Variation in latency across the test.
+- **Provider** — Which provider produced the result (Ookla, LibreSpeed, Cloudflare, or Fast.com).
+- **Status** — `Success`, `Failed`, or `Skipped` (e.g., during a [maintenance window](/configuration/maintenance-windows)).
+
+Each card compares the latest value to a recent baseline so you can immediately see whether speeds are up, down, or stable.
+
+## History and trends
+
+Below the summary cards, the dashboard shows time-series charts:
+
+- **Download / upload over time** — Line chart of bandwidth across the selected range.
+- **Ping over time** — Latency chart, useful for spotting jitter or brief outages.
+- **Per-provider comparison** — Overlay multiple providers to see how their measurements differ.
+
+Use the **time range selector** (top right of the charts) to switch between last hour, day, week, month, or a custom range.
+
+<Tip>
+  Compare providers across the same time range to validate suspicious results. If one provider shows a drop and others don't, the issue is likely with that provider's server, not your connection.
+</Tip>
+
+## Recent runs table
+
+A scrollable table lists individual test runs with:
+
+- Timestamp
+- Provider
+- Download / upload / ping / jitter
+- Status (success / failed)
+- Action menu (view details, delete, retry)
+
+Click any row to open a detailed view with full result data, raw provider output, and any related error messages.
+
+## Run a test on demand
+
+The **Run Test** button in the top right of the dashboard triggers a manual test immediately:
+
+<Steps>
+  <Step title="Click Run Test">
+    Open the dashboard and click **Run Test**.
+  </Step>
+  <Step title="Choose a provider">
+    Select which enabled provider should run the test.
+  </Step>
+  <Step title="Wait for completion">
+    The result appears in real time and is saved to history alongside scheduled runs.
+  </Step>
+</Steps>
+
+Manual runs use the same providers and storage as scheduled runs — there's no separate history.
+
+## Live status
+
+When a scheduled or manual test is executing, a live status indicator shows progress in real time using the built-in WebSocket connection. If you don't see live updates, see [Troubleshooting — WebSocket not connecting](/troubleshooting).
+
+## Filters
+
+The dashboard supports filtering by:
+
+- **Provider** — Show only results from a specific provider.
+- **Status** — Show only successful or failed runs.
+- **Date range** — Limit to a custom window.
+- **Schedule** — Show only runs produced by a specific schedule.
+
+Filters persist while you navigate but reset when you sign out.
+
+## Exporting data
+
+For anything beyond the built-in views, use the [API reference](/api-reference) to pull raw test data into Grafana, Prometheus, or your own dashboards.
+
+## Related pages
+
+- [Providers and schedule](/Providers-and-schedule)
+- [Ping monitoring](/configuration/ping-monitoring)
+- [Maintenance windows](/configuration/maintenance-windows)
+- [API reference](/api-reference)

@@ -1,0 +1,101 @@
+---
+title: "User management and authentication"
+sidebarTitle: "User management"
+description: "Manage accounts, sessions, and authentication in Zepeed (Laravel Fortify)."
+---
+
+Zepeed uses [Laravel Fortify](https://laravel.com/docs/fortify) for authentication. Fortify handles login, logout, password resets, password updates, and session management. This page covers how to manage user accounts and secure access to your Zepeed instance.
+
+## The default admin account
+
+On first boot, Zepeed creates a default admin account using these environment variables (see [Environment Variables](/environment)):
+
+| Variable | Default |
+| --- | --- |
+| `DEFAULT_ADMIN_NAME` | `Zepeed Admin` |
+| `DEFAULT_ADMIN_EMAIL` | `admin@zepeed.local` |
+| `DEFAULT_ADMIN_PASSWORD` | _(required, min 8 chars)_ |
+
+<Warning>
+  Change `DEFAULT_ADMIN_PASSWORD` in `.env` **before** starting the stack for the first time. The account is only created on first boot — changing the variable later has no effect.
+</Warning>
+
+After signing in for the first time, update the password from **Profile Settings**.
+
+## Sign in
+
+Navigate to your `APP_URL` and enter your email and password on the login screen. On success, Fortify issues a session cookie and redirects you to the dashboard.
+
+If authentication fails, double-check:
+
+- The email and password match the credentials you set in `.env`.
+- `APP_URL` in `.env` matches the URL you opened in the browser (required for session cookies).
+- Your browser accepts cookies from the Zepeed domain.
+
+## Update your profile
+
+From **Profile Settings** any signed-in user can:
+
+- Change their display name and email.
+- Change their password (Fortify requires the current password).
+- Sign out of other browser sessions.
+- Delete their account (if account deletion is enabled).
+
+## Reset a password from the CLI
+
+If email isn't working, use the built-in artisan command to reset any user's password interactively:
+
+```bash
+docker compose exec app php artisan app:reset-user-password
+```
+
+You'll be prompted for:
+
+- **Email address** — Must match an existing user. The command validates that the address is registered before continuing.
+- **New password** — Entered securely (input is hidden).
+
+On success, you'll see:
+
+```text
+Password for user user@example.com has been updated.
+```
+
+The user can sign in immediately with the new password.
+
+## Sessions
+
+Fortify manages sessions using signed cookies. From **Profile Settings → Browser Sessions** you can:
+
+- View all active sessions for your account, including IP address and browser.
+- Sign out individual sessions remotely.
+- Sign out of every session except the current one.
+
+## API tokens
+
+For programmatic access, generate API tokens instead of using session cookies. See [API reference — Authentication](/api-reference#authentication).
+
+## Best practices
+
+<CardGroup cols={2}>
+  <Card title="Rotate the default admin password">
+    Change it on first sign-in. The default values in `.env` are well-known.
+  </Card>
+
+  <Card title="One account per person">
+    Don't share accounts — it breaks the audit trail and session management.
+  </Card>
+
+  <Card title="Use a reverse proxy with TLS">
+    Always serve Zepeed over HTTPS in production. Session cookies are not safe over plain HTTP.
+  </Card>
+
+  <Card title="Revoke unused API tokens">
+    Audit and revoke API tokens from **Settings → API Tokens** when they're no longer needed.
+  </Card>
+</CardGroup>
+
+## Related pages
+
+- [Environment Variables](/environment) — Default admin account settings.
+- [Email notifications](/configuration/email-notifications) — Required for password resets.
+- [API reference](/api-reference) — Token-based authentication for integrations.

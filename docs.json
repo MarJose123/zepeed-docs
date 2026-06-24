@@ -27,7 +27,8 @@
           },
           "Providers-and-schedule",
           "environment"
-        ]
+        ],
+        "icon": "notebook"
       },
       {
         "group": "Configuration",

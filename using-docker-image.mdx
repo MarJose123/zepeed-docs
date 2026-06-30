@@ -175,6 +175,99 @@ description: "Deploy Zepeed using Docker on Proxmox, CasaOS, Ubuntu, or any home
 
     See [Environment Variables](/environment) for a full description of every option.
   </Step>
+  <Step title="Run the container">
+    <Tabs>
+      <Tab title="MariaDB">
+        ```bash
+                docker run -d \
+                  --name zepeed \
+                  --restart unless-stopped \
+                  -p 8080:8080 \
+                  -e APP_KEY="base64:your_generated_key_here" \
+                  -e APP_URL="http://your-host:8080" \
+                  -e APP_TIMEZONE="UTC" \
+                  -e DB_CONNECTION="mariadb" \
+                  -e DB_HOST="your-mariadb-host" \
+                  -e DB_PORT="3306" \
+                  -e DB_DATABASE="zepeed" \
+                  -e DB_USERNAME="zepeed" \
+                  -e DB_PASSWORD="your_strong_password" \
+                  -e PUSHER_APP_ID="zepeed" \
+                  -e PUSHER_APP_KEY="zepeed_key" \
+                  -e PUSHER_APP_SECRET="your_ws_secret" \
+                  -e PUSHER_HOST="127.0.0.1" \
+                  -e PUSHER_PORT="6001" \
+                  -e PUSHER_SCHEME="http" \
+                  -e DEFAULT_ADMIN_NAME="Zepeed Admin" \
+                  -e DEFAULT_ADMIN_EMAIL="admin@zepeed.local" \
+                  -e DEFAULT_ADMIN_PASSWORD="your_admin_password" \
+                  -v zepeed-storage:/var/www/html/storage/app \
+                  -v zepeed-logs:/var/www/html/storage/logs \
+                  marjose123/zepeed:latest
+        ```
+      </Tab>
+      <Tab title="MySQL">
+        ```bash
+                docker run -d \
+                  --name zepeed \
+                  --restart unless-stopped \
+                  -p 8080:8080 \
+                  -e APP_KEY="base64:your_generated_key_here" \
+                  -e APP_URL="http://your-host:8080" \
+                  -e APP_TIMEZONE="UTC" \
+                  -e DB_CONNECTION="mysql" \
+                  -e DB_HOST="your-mysql-host" \
+                  -e DB_PORT="3306" \
+                  -e DB_DATABASE="zepeed" \
+                  -e DB_USERNAME="zepeed" \
+                  -e DB_PASSWORD="your_strong_password" \
+                  -e PUSHER_APP_ID="zepeed" \
+                  -e PUSHER_APP_KEY="zepeed_key" \
+                  -e PUSHER_APP_SECRET="your_ws_secret" \
+                  -e PUSHER_HOST="127.0.0.1" \
+                  -e PUSHER_PORT="6001" \
+                  -e PUSHER_SCHEME="http" \
+                  -e DEFAULT_ADMIN_NAME="Zepeed Admin" \
+                  -e DEFAULT_ADMIN_EMAIL="admin@zepeed.local" \
+                  -e DEFAULT_ADMIN_PASSWORD="your_admin_password" \
+                  -v zepeed-storage:/var/www/html/storage/app \
+                  -v zepeed-logs:/var/www/html/storage/logs \
+                  marjose123/zepeed:latest
+        ```
+      </Tab>
+      <Tab title="PostgreSQL">
+        ```bash
+                docker run -d \
+                  --name zepeed \
+                  --restart unless-stopped \
+                  -p 8080:8080 \
+                  -e APP_KEY="base64:your_generated_key_here" \
+                  -e APP_URL="http://your-host:8080" \
+                  -e APP_TIMEZONE="UTC" \
+                  -e DB_CONNECTION="pgsql" \
+                  -e DB_HOST="your-postgres-host" \
+                  -e DB_PORT="5432" \
+                  -e DB_DATABASE="zepeed" \
+                  -e DB_USERNAME="zepeed" \
+                  -e DB_PASSWORD="your_strong_password" \
+                  -e PUSHER_APP_ID="zepeed" \
+                  -e PUSHER_APP_KEY="zepeed_key" \
+                  -e PUSHER_APP_SECRET="your_ws_secret" \
+                  -e PUSHER_HOST="127.0.0.1" \
+                  -e PUSHER_PORT="6001" \
+                  -e PUSHER_SCHEME="http" \
+                  -e DEFAULT_ADMIN_NAME="Zepeed Admin" \
+                  -e DEFAULT_ADMIN_EMAIL="admin@zepeed.local" \
+                  -e DEFAULT_ADMIN_PASSWORD="your_admin_password" \
+                  -v zepeed-storage:/var/www/html/storage/app \
+                  -v zepeed-logs:/var/www/html/storage/logs \
+                  marjose123/zepeed:latest
+        ```
+      </Tab>
+    </Tabs>
+
+    See [Environment Variables](/environment) for a full description of every option.
+  </Step>
   <Step title="Follow the first-boot logs">
     ```bash
         docker logs -f zepeed
@@ -183,6 +276,22 @@ description: "Deploy Zepeed using Docker on Proxmox, CasaOS, Ubuntu, or any home
     Wait until you see: `[default-account] Default admin account created: admin@zepeed.local`
 
     This confirms that migrations ran successfully and the admin account is ready.
+  </Step>
+  <Step title="Follow the first-boot logs">
+    ```bash
+        docker logs -f zepeed
+    ```
+
+    Wait until you see: `[default-account] Default admin account created: admin@zepeed.local`
+
+    This confirms that migrations ran successfully and the admin account is ready.
+  </Step>
+  <Step title="Open in your browser">
+    Navigate to `http://your-host:8080` and log in with the `DEFAULT_ADMIN_EMAIL` and `DEFAULT_ADMIN_PASSWORD` you set in step 3.
+
+    <Check>
+      Change your password immediately after first login via **Profile Settings**.
+    </Check>
   </Step>
   <Step title="Open in your browser">
     Navigate to `http://your-host:8080` and log in with the `DEFAULT_ADMIN_EMAIL` and `DEFAULT_ADMIN_PASSWORD` you set in step 3.

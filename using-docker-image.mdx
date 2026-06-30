@@ -22,7 +22,15 @@ description: "Deploy Zepeed using Docker on Proxmox, CasaOS, Ubuntu, or any home
   <Card title="4 GB Disk" icon="hard-drive">
     For the container image and persistent volumes
   </Card>
+
+  <Card title="Soketi (required)" icon="bolt">
+    WebSocket server required for the realtime dashboard data feed and provider testing results
+  </Card>
 </CardGroup>
+
+<Warning>
+  Soketi is **required**, not optional. Without it the dashboard will not receive realtime updates and provider connection tests will not return results to the UI.
+</Warning>
 
 ---
 
@@ -53,6 +61,26 @@ description: "Deploy Zepeed using Docker on Proxmox, CasaOS, Ubuntu, or any home
     ```
 
     Copy the full output — it starts with `base64:`. You will use it as `APP_KEY` in the next step.
+  </Step>
+  <Step title="Run Soketi (required for realtime features)">
+    Zepeed uses [Soketi](https://docs.soketi.app/) as its WebSocket server to power the realtime dashboard data feed and to stream provider testing results back to the UI. Start it before launching Zepeed:
+
+    ```bash
+        docker run -d \
+          --name soketi \
+          --restart unless-stopped \
+          -p 6001:6001 \
+          -e SOKETI_DEFAULT_APP_ID="zepeed" \
+          -e SOKETI_DEFAULT_APP_KEY="zepeed_key" \
+          -e SOKETI_DEFAULT_APP_SECRET="your_ws_secret" \
+          quay.io/soketi/soketi:latest-16-alpine
+    ```
+
+    The `SOKETI_DEFAULT_APP_ID`, `SOKETI_DEFAULT_APP_KEY`, and `SOKETI_DEFAULT_APP_SECRET` values **must match** the `PUSHER_APP_ID`, `PUSHER_APP_KEY`, and `PUSHER_APP_SECRET` you set on the Zepeed container in the next step.
+
+    <Tip>
+      If Soketi runs on a different host than Zepeed, set `PUSHER_HOST` to that host's address (instead of `127.0.0.1`) when running the Zepeed container.
+    </Tip>
   </Step>
   <Step title="Run the container">
     <Tabs>

@@ -7,27 +7,27 @@ The Zepeed MCP server is designed to provide AI agents with a powerful interface
 
 ### Capability Comparison
 
-| Feature | Web UI | MCP Server |
-| :-- | :-: | :-: |
-| View Speedtest Results | ✅ | ✅ |
-| View Ping Results | ✅ | ✅ |
-| List Providers | ✅ | ✅ |
-| List Maintenance Windows | ✅ | ✅ |
-| Run Manual Speedtest | ✅ | ❌ |
-| Configure Providers | ✅ | ❌ |
-| Manage Maintenance Windows | ✅ | ❌ |
-| Configure Webhooks | ✅ | ❌ |
-| Manage API Tokens | ✅ | ❌ |
-| System Settings | ✅ | ❌ |
+| Feature | Web UI | MCP Server | REST API |
+| :-- | :-: | :-: | :-: |
+| View Speedtest Results | ✅ | ✅ | ✅ |
+| View Ping Results | ✅ | ✅ | ✅ |
+| List Providers | ✅ | ✅ | ✅ |
+| List Maintenance Windows | ✅ | ✅ | ✅ |
+| Run Manual Speedtest | ✅ | ❌ | ❌ |
+| Configure Providers | ✅ | ❌ | ❌ |
+| Manage Maintenance Windows | ✅ | ❌ | ❌ |
+| Configure Webhooks | ✅ | ❌ | ❌ |
+| Manage API Tokens | ✅ | ❌ | ❌ |
+| System Settings | ✅ | ❌ | ❌ |
 
 ### Available Tools vs. UI Pages
 
-| UI Page | MCP Tool(s) | Notes |
-| :-- | :-- | :-- |
-| **Dashboard** | `list_speedtest_results`, `list_ping_results` | MCP tools provide raw result data. |
-| **Providers** | `list_providers`, `list_provider_schedules` | MCP is read-only for providers. |
-| **Maintenance** | `list_maintenance_windows` | MCP is read-only for maintenance. |
-| **Settings** | `get_app_version` | Most system settings are not exposed. |
+| UI Page | MCP Tool(s) | API Endpoint(s) | Notes |
+| :-- | :-- | :-- | :-- |
+| **Dashboard** | `list_speedtest_results`, `list_ping_results` | `/v1/speedtest/results`, `/v1/pings` | MCP and API provide raw data. |
+| **Providers** | `list_providers`, `list_provider_schedules` | `/v1/providers`, `/v1/providers/schedules` | Read-only for both interfaces. |
+| **Maintenance** | `list_maintenance_windows` | `/v1/maintenance/schedules` | Read-only for both interfaces. |
+| **Settings** | `get_app_version` | `/v1/app/version` | Most system settings are not exposed. |
 
 ### Future Parity
 

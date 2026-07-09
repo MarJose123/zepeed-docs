@@ -44,7 +44,7 @@
       },
       {
         "group": "Integrations",
-        "icon": "puzzle-piece",
+        "icon": "container",
         "pages": [
           "integrations/prometheus",
           "integrations/mcp",

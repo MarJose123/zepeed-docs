@@ -1,0 +1,38 @@
+---
+title: "MCP Parity"
+description: "Comparison of capabilities between the Zepeed Web UI and the MCP Server."
+---
+
+The Zepeed MCP server is designed to provide AI agents with a powerful interface to query monitoring data. However, not all features available in the Web UI are currently exposed through MCP.
+
+### Capability Comparison
+
+| Feature | Web UI | MCP Server | REST API |
+| :-- | :-: | :-: | :-: |
+| View Speedtest Results | ✅ | ✅ | ✅ |
+| View Ping Results | ✅ | ✅ | ✅ |
+| List Providers | ✅ | ✅ | ✅ |
+| List Maintenance Windows | ✅ | ✅ | ✅ |
+| Run Manual Speedtest | ✅ | ❌ | ❌ |
+| Configure Providers | ✅ | ❌ | ❌ |
+| Manage Maintenance Windows | ✅ | ❌ | ❌ |
+| Configure Webhooks | ✅ | ❌ | ❌ |
+| Manage API Tokens | ✅ | ❌ | ❌ |
+| System Settings | ✅ | ❌ | ❌ |
+
+### Available Tools vs. UI Pages
+
+| UI Page | MCP Tool(s) | API Endpoint(s) | Notes |
+| :-- | :-- | :-- | :-- |
+| **Dashboard** | `list_speedtest_results`, `list_ping_results` | `/v1/speedtest/results`, `/v1/pings` | MCP and API provide raw data. |
+| **Providers** | `list_providers`, `list_provider_schedules` | `/v1/providers`, `/v1/providers/schedules` | Read-only for both interfaces. |
+| **Maintenance** | `list_maintenance_windows` | `/v1/maintenance/schedules` | Read-only for both interfaces. |
+| **Settings** | `get_app_version` | `/v1/app/version` | Most system settings are not exposed. |
+
+### Future Parity
+
+We are continuously working to expand the MCP server's capabilities. Planned features for future parity include:
+
+- **Write Access**: Ability to create maintenance windows or toggle providers via MCP.
+- **Triggering Actions**: Ability to trigger a manual speedtest or ping probe.
+- **Alert Management**: Querying and acknowledging active alerts.

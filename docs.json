@@ -42,6 +42,15 @@
           "configuration/user-management"
         ]
       },
+      {
+        "group": "Integrations",
+        "icon": "container",
+        "pages": [
+          "integrations/prometheus",
+          "integrations/mcp",
+          "integrations/mcp-parity"
+        ]
+      },
       "api-reference",
       "local-development",
       {

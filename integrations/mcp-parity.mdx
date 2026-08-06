@@ -3,7 +3,7 @@ title: "MCP Parity"
 description: "Comparison of capabilities between the Zepeed Web UI and the MCP Server."
 ---
 
-The Zepeed MCP server is designed to provide AI agents with a powerful interface to query monitoring data. However, not all features available in the Web UI are currently exposed through MCP.
+The Zepeed MCP server provides AI agents with a powerful interface to query and manage monitoring data. Most features available in the Web UI are now exposed through MCP, with a few exceptions.
 
 ### Capability Comparison
 
@@ -12,11 +12,15 @@ The Zepeed MCP server is designed to provide AI agents with a powerful interface
 | View Speedtest Results | ✅ | ✅ | ✅ |
 | View Ping Results | ✅ | ✅ | ✅ |
 | List Providers | ✅ | ✅ | ✅ |
-| List Maintenance Windows | ✅ | ✅ | ✅ |
-| Run Manual Speedtest | ✅ | ❌ | ❌ |
-| Configure Providers | ✅ | ❌ | ❌ |
-| Manage Maintenance Windows | ✅ | ❌ | ❌ |
-| Configure Webhooks | ✅ | ❌ | ❌ |
+| Configure Providers | ✅ | ✅ | ✅ |
+| List Provider Schedules | ✅ | ✅ | ✅ |
+| Run Manual Speedtest | ✅ | ✅ | ✅ |
+| Manage Maintenance Windows | ✅ | ✅ | ✅ |
+| Configure Webhooks | ✅ | ✅ | ✅ |
+| Manage Alert Rules (Speedtest & Ping) | ✅ | ✅ | ✅ |
+| Export Results | ✅ | ✅ | ✅ |
+| Manage Ping Targets | ✅ | ❌ | ❌ |
+| View Webhook Deliveries | ✅ | ❌ | ✅ |
 | Manage API Tokens | ✅ | ❌ | ❌ |
 | System Settings | ✅ | ❌ | ❌ |
 
@@ -24,15 +28,25 @@ The Zepeed MCP server is designed to provide AI agents with a powerful interface
 
 | UI Page | MCP Tool(s) | API Endpoint(s) | Notes |
 | :-- | :-- | :-- | :-- |
-| **Dashboard** | `list_speedtest_results`, `list_ping_results` | `/v1/speedtest/results`, `/v1/pings` | MCP and API provide raw data. |
-| **Providers** | `list_providers`, `list_provider_schedules` | `/v1/providers`, `/v1/providers/schedules` | Read-only for both interfaces. |
-| **Maintenance** | `list_maintenance_windows` | `/v1/maintenance/schedules` | Read-only for both interfaces. |
-| **Settings** | `get_app_version` | `/v1/app/version` | Most system settings are not exposed. |
+| **Dashboard** | `list-speedtest-results`, `list-ping-results`, `get-app-version` | `/v1/speedtest/results`, `/v1/pings`, `/v1/app/version` | MCP and API provide raw data. |
+| **Results (Latency / Upload / Download)** | `list-speedtest-results` | `/v1/speedtest/results`, `/v1/speedtest/results/latest` | Exports can be queued from the UI or via MCP. |
+| **Ping Results** | `list-ping-results` | `/v1/pings` | Read-only for both interfaces. |
+| **Ping Targets** | — | — | Web UI only. |
+| **Providers** | `list-providers`, `update-provider`, `run-speedtest` | `/v1/providers`, `/v1/providers/{provider}`, `/v1/providers/{provider}/run-now` | Full management via MCP and API. |
+| **Schedules** | `list-provider-schedules` | `/v1/providers/schedules` | Read-only for both interfaces. |
+| **Maintenance** | `list-maintenance-windows`, `create-maintenance-window`, `update-maintenance-window`, `delete-maintenance-window`, `toggle-global-pause` | `/v1/maintenance/schedules`, `/v1/maintenance/global-pause` | Full management via MCP and API. |
+| **Webhooks** | `list-webhooks`, `create-webhook`, `update-webhook`, `delete-webhook`, `test-webhook` | `/v1/webhooks`, `/v1/webhooks/{webhook}/test` | Full management via MCP and API. |
+| **Webhook Deliveries** | — | `/v1/webhooks/{webhook}/deliveries` | Delivery history is API-only; MCP `test-webhook` records a delivery. |
+| **Alert Rules** | `list-alert-rules`, `create-alert-rule`, `update-alert-rule`, `delete-alert-rule`, `toggle-alert-rule` | `/v1/alerts`, `/v1/alerts/{alertRule}/toggle` | Full management via MCP and API. |
+| **Ping Alerts** | `list-ping-alert-rules`, `create-ping-alert-rule`, `update-ping-alert-rule`, `delete-ping-alert-rule`, `toggle-ping-alert-rule` | `/v1/ping-alerts`, `/v1/ping-alerts/{pingAlertRule}/toggle` | Full management via MCP and API. |
+| **Exports / Download** | `list-exports`, `create-export`, `get-export` | `/v1/exports`, `/v1/exports/{exportRequest}/download` | Asynchronous; downloads are API/UI only. |
+| **Settings** | `get-app-version` | `/v1/app/version` | Most system settings are not exposed. |
 
 ### Future Parity
 
 We are continuously working to expand the MCP server's capabilities. Planned features for future parity include:
 
-- **Write Access**: Ability to create maintenance windows or toggle providers via MCP.
-- **Triggering Actions**: Ability to trigger a manual speedtest or ping probe.
-- **Alert Management**: Querying and acknowledging active alerts.
+- **Ping Target Management**: Creating, updating, and deleting ping targets via MCP.
+- **Webhook Deliveries**: Querying delivery history for webhook endpoints.
+- **System Settings**: Exposing general settings, mail providers, and other configuration via MCP.
+- **API Token Management**: Creating and revoking API tokens via MCP.

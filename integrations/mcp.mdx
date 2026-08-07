@@ -3,7 +3,7 @@ title: "MCP Server"
 description: "Connect AI tools like Claude, Cursor, and GitHub Copilot to your Zepeed instance."
 ---
 
-Zepeed exposes an **MCP (Model Context Protocol)** server that allows AI agents to query your monitoring data programmatically. This enables scenarios like asking your AI assistant to "check the latest speedtest results" or "find any failing ping targets."
+Zepeed exposes an **MCP (Model Context Protocol)** server that allows AI agents to query _and manage_ your monitoring data programmatically. This enables scenarios like asking your AI assistant to "check the latest speedtest results," "create a maintenance window," or "trigger a speedtest now."
 
 ### Server URL
 
@@ -15,11 +15,11 @@ https://your-zepeed-instance.com/mcp/zepeed
 
 ### Authentication
 
-The MCP server requires authentication using a **Sanctum API Token**.
+The MCP server requires authentication using a **Sanctum API Token**. It enforces the same token abilities as the REST API — read tools accept the module's `:view` ability, while write tools require their specific ability (e.g. `speedtest:run`, `webhooks:create`).
 
 1. Log in to the Zepeed web UI.
 2. Navigate to **Settings \> API Tokens**.
-3. Create a new token (e.g., named "AI-Assistant").
+3. Create a new token (e.g., named "AI-Assistant") and grant the abilities the assistant should have.
 4. Copy the generated token — you will need it for your AI client configuration.
 
 ### Client Configuration
@@ -80,10 +80,55 @@ Create `.vscode/mcp.json` in your workspace:
 
 ### Available Tools
 
-Once connected, your AI assistant will have access to several tools, including:
+Once connected, your AI assistant will have access to the following tools (tool names use kebab-case):
 
-- `list_speedtest_results`: Query recent speedtest data.
-- `list_ping_results`: Query recent ping latency data.
-- `list_providers`: List configured speedtest providers.
-- `list_maintenance_windows`: Check for active or upcoming maintenance.
-- `get_app_version`: Check the current Zepeed version.
+#### Speedtest
+
+- `list-speedtest-results`: Query speedtest results with pagination, filtering, sorting, and search.
+- `run-speedtest`: Trigger an immediate manual speedtest run for a provider. Skipped automatically if the provider is under a maintenance window.
+- `list-providers`: List configured speedtest providers.
+- `update-provider`: Update a provider's configuration. Disabling an enabled provider also disables all of its active schedules.
+- `list-provider-schedules`: List provider schedules.
+
+#### Ping
+
+- `list-ping-results`: Query recent ping latency data with pagination, filtering, and sorting.
+
+#### Maintenance
+
+- `list-maintenance-windows`: List maintenance windows with pagination, filtering, and sorting.
+- `create-maintenance-window`: Create a one-time or recurring maintenance window.
+- `update-maintenance-window`: Update a maintenance window by id.
+- `delete-maintenance-window`: Delete a maintenance window by id.
+- `toggle-global-pause`: Toggle the global indefinite pause on/off. When active, all providers are suppressed from running scheduled tests.
+
+#### Webhooks
+
+- `list-webhooks`: List webhook configurations with pagination.
+- `create-webhook`: Create a new webhook configuration (secret is stored encrypted and never returned).
+- `update-webhook`: Update an existing webhook configuration by id.
+- `delete-webhook`: Delete a webhook configuration by id.
+- `test-webhook`: Send a synchronous test delivery to a webhook endpoint.
+
+#### Alert Rules
+
+- `list-alert-rules`: List speedtest alert rules with pagination and an optional `is_active` filter.
+- `create-alert-rule`: Create a speedtest alert rule with its conditions and actions.
+- `update-alert-rule`: Update a speedtest alert rule by id.
+- `delete-alert-rule`: Delete a speedtest alert rule by id.
+- `toggle-alert-rule`: Toggle the active state of a speedtest alert rule.
+- `list-ping-alert-rules`: List ping alert rules with pagination and an optional `is_active` filter.
+- `create-ping-alert-rule`: Create a ping alert rule with its conditions and actions.
+- `update-ping-alert-rule`: Update a ping alert rule by id.
+- `delete-ping-alert-rule`: Delete a ping alert rule by id.
+- `toggle-ping-alert-rule`: Toggle the active state of a ping alert rule.
+
+#### Exports
+
+- `list-exports`: List the authenticated user's export requests, newest first.
+- `create-export`: Queue an asynchronous export of speedtest or ping results (csv, xlsx, or json).
+- `get-export`: Show a single export request; optionally include the completed file content.
+
+#### App
+
+- `get-app-version`: Get application version and environment information.

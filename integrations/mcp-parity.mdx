@@ -17,6 +17,7 @@ The Zepeed MCP server provides AI agents with a powerful interface to query and 
 | Run Manual Speedtest | ✅ | ✅ | ✅ |
 | Manage Maintenance Windows | ✅ | ✅ | ✅ |
 | Configure Webhooks | ✅ | ✅ | ✅ |
+| Configure Apprise | ✅ | ❌ | ✅ |
 | Manage Alert Rules (Speedtest & Ping) | ✅ | ✅ | ✅ |
 | Export Results | ✅ | ✅ | ✅ |
 | Manage Ping Targets | ✅ | ❌ | ❌ |
@@ -37,6 +38,7 @@ The Zepeed MCP server provides AI agents with a powerful interface to query and 
 | **Maintenance** | `list-maintenance-windows`, `create-maintenance-window`, `update-maintenance-window`, `delete-maintenance-window`, `toggle-global-pause` | `/v1/maintenance/schedules`, `/v1/maintenance/global-pause` | Full management via MCP and API. |
 | **Webhooks** | `list-webhooks`, `create-webhook`, `update-webhook`, `delete-webhook`, `test-webhook` | `/v1/webhooks`, `/v1/webhooks/{webhook}/test` | Full management via MCP and API. |
 | **Webhook Deliveries** | — | `/v1/webhooks/{webhook}/deliveries` | Delivery history is API-only; MCP `test-webhook` records a delivery. |
+| **Apprise** | — | `/v1/apprise`, `/v1/apprise/{apprise}`, `/v1/apprise/{apprise}/test` | Managed via the Web UI and REST API only; no MCP tools yet. |
 | **Alert Rules** | `list-alert-rules`, `create-alert-rule`, `update-alert-rule`, `delete-alert-rule`, `toggle-alert-rule` | `/v1/alerts`, `/v1/alerts/{alertRule}/toggle` | Full management via MCP and API. |
 | **Ping Alerts** | `list-ping-alert-rules`, `create-ping-alert-rule`, `update-ping-alert-rule`, `delete-ping-alert-rule`, `toggle-ping-alert-rule` | `/v1/ping-alerts`, `/v1/ping-alerts/{pingAlertRule}/toggle` | Full management via MCP and API. |
 | **Exports / Download** | `list-exports`, `create-export`, `get-export` | `/v1/exports`, `/v1/exports/{exportRequest}/download` | Asynchronous; downloads are API/UI only. |
@@ -47,6 +49,7 @@ The Zepeed MCP server provides AI agents with a powerful interface to query and 
 We are continuously working to expand the MCP server's capabilities. Planned features for future parity include:
 
 - **Ping Target Management**: Creating, updating, and deleting ping targets via MCP.
+- **Apprise Management**: Listing, creating, updating, and testing Apprise instances via MCP.
 - **Webhook Deliveries**: Querying delivery history for webhook endpoints.
 - **System Settings**: Exposing general settings, mail providers, and other configuration via MCP.
 - **API Token Management**: Creating and revoking API tokens via MCP.

@@ -8,58 +8,67 @@
     "dark": "#15803D"
   },
   "navigation": {
-    "pages": [
-      "index",
-      "features",
-      "changelog",
-      "troubleshooting",
-      "contribute",
+    "versions": [
       {
-        "group": "Getting Started",
+        "version": "1.x",
+        "default": true,
         "pages": [
-          "quickstart",
+          "1.x/index",
+          "1.x/features",
+          "1.x/changelog",
+          "1.x/troubleshooting",
+          "contribute",
           {
-            "group": "Installation",
+            "group": "Getting Started",
+            "icon": "notebook",
             "pages": [
-              "using-docker-compose",
-              "using-docker-image"
+              "1.x/quickstart",
+              {
+                "group": "Installation",
+                "pages": [
+                  "using-docker-compose",
+                  "using-docker-image"
+                ]
+              },
+              "Providers-and-schedule",
+              "environment"
             ]
           },
-          "Providers-and-schedule",
-          "environment"
-        ],
-        "icon": "notebook"
-      },
-      {
-        "group": "Configuration",
-        "icon": "brain-cog",
-        "pages": [
-          "configuration/webhooks",
-          "configuration/email-notifications",
-          "configuration/maintenance-windows",
-          "configuration/ping-monitoring",
-          "configuration/dashboard",
-          "configuration/user-management"
+          {
+            "group": "Configuration",
+            "icon": "brain-cog",
+            "pages": [
+              "configuration/webhooks",
+              "configuration/email-notifications",
+              "configuration/maintenance-windows",
+              "configuration/ping-monitoring",
+              "configuration/dashboard",
+              "configuration/user-management"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "icon": "container",
+            "pages": [
+              "integrations/prometheus",
+              "integrations/mcp",
+              "integrations/mcp-parity"
+            ]
+          },
+          "api-reference",
+          "local-development",
+          {
+            "group": "More",
+            "icon": "link",
+            "pages": [
+              "source-code",
+              "update-the-docs"
+            ]
+          }
         ]
       },
       {
-        "group": "Integrations",
-        "icon": "container",
-        "pages": [
-          "integrations/prometheus",
-          "integrations/mcp",
-          "integrations/mcp-parity"
-        ]
-      },
-      "api-reference",
-      "local-development",
-      {
-        "group": "More",
-        "icon": "link",
-        "pages": [
-          "source-code",
-          "update-the-docs"
-        ]
+        "version": "2.x"
       }
     ]
   },

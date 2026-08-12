@@ -26,37 +26,37 @@
               {
                 "group": "Installation",
                 "pages": [
-                  "using-docker-compose",
-                  "using-docker-image"
+                  "1.x/using-docker-compose",
+                  "1.x/using-docker-image"
                 ]
               },
-              "Providers-and-schedule",
-              "environment"
+              "1.x/Providers-and-schedule",
+              "1.x/environment"
             ]
           },
           {
             "group": "Configuration",
             "icon": "brain-cog",
             "pages": [
-              "configuration/webhooks",
-              "configuration/email-notifications",
-              "configuration/maintenance-windows",
-              "configuration/ping-monitoring",
-              "configuration/dashboard",
-              "configuration/user-management"
+              "1.x/configuration/webhooks",
+              "1.x/configuration/email-notifications",
+              "1.x/configuration/maintenance-windows",
+              "1.x/configuration/ping-monitoring",
+              "1.x/configuration/dashboard",
+              "1.x/configuration/user-management"
             ]
           },
           {
             "group": "Integrations",
             "icon": "container",
             "pages": [
-              "integrations/prometheus",
-              "integrations/mcp",
-              "integrations/mcp-parity"
+              "1.x/integrations/prometheus",
+              "1.x/integrations/mcp",
+              "1.x/integrations/mcp-parity"
             ]
           },
-          "api-reference",
-          "local-development",
+          "1.x/api-reference",
+          "1.x/local-development",
           {
             "group": "More",
             "icon": "link",

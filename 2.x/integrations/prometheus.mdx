@@ -1,0 +1,67 @@
+---
+title: "Prometheus Integration"
+description: "Expose Zepeed monitoring metrics for scraping with Prometheus and Grafana."
+---
+
+Zepeed includes a built-in Prometheus exporter that exposes real-time monitoring data, including speedtest results, ping latency, and system health, via a standard text-based exposition format.
+
+### Getting Started
+
+To enable the Prometheus integration, navigate to **Settings \> Integrations \> Prometheus** in the Zepeed web UI.
+
+1. Toggle **Enable Prometheus Integration** to on.
+2. Configure an **IP Allowlist** to restrict access to the metrics endpoint (e.g., the IP of your Prometheus server).
+3. Adjust the **Cache TTL** if necessary (default is 60 seconds) to balance data freshness with server load.
+
+### Metrics Endpoint
+
+Once enabled, the metrics are available at:
+
+```bash
+https://your-zepeed-instance.com/metrics
+```
+
+Access is restricted based on the IP Allowlist configured in the settings. If no IPs are listed, the endpoint is disabled for all callers.
+
+### Available Metrics
+
+Zepeed groups metrics into three main categories, which can be toggled individually in the settings.
+
+#### Speedtest Metrics (`include_speed`)
+
+| Metric | Description | Labels |
+| :-- | :-- | :-- |
+| `zepeed_speedtest_download_mbps` | Latest download speed in Mbps | `provider` |
+| `zepeed_speedtest_upload_mbps` | Latest upload speed in Mbps | `provider` |
+| `zepeed_speedtest_ping_ms` | Latest latency to test server in ms | `provider` |
+| `zepeed_speedtest_jitter_ms` | Latest jitter in ms | `provider` |
+| `zepeed_speedtest_packet_loss_percent` | Latest packet loss % | `provider` |
+| `zepeed_speedtest_results_total` | Result count in the last 24h by status | `provider`, `status` |
+| `zepeed_speedtest_success_rate_percent` | Success % in the last 24h | `provider` |
+| `zepeed_provider_enabled` | 1 if the provider is enabled | `provider` |
+| `zepeed_provider_up` | 1 if enabled AND last run was successful | `provider` |
+| `zepeed_speedtest_failures_by_reason_total` | Failed result count in the last 24h by reason | `provider`, `reason` |
+
+#### Ping Metrics (`include_ping`)
+
+| Metric | Description | Labels |
+| :-- | :-- | :-- |
+| `zepeed_ping_up` | 1 if PingStatus is ok, 0 otherwise | `target`, `host` |
+| `zepeed_ping_avg_ms` | Average round-trip in ms | `target`, `host` |
+| `zepeed_ping_packet_loss_percent` | Packet loss % | `target`, `host` |
+| `zepeed_ping_results_total` | Result count in the last 24h by status | `target`, `host`, `status` |
+| `zepeed_ping_success_rate_percent` | Success rate % in the last 24h | `target`, `host` |
+
+#### System & Alert Metrics (`include_system`)
+
+| Metric | Description | Labels |
+| :-- | :-- | :-- |
+| `zepeed_alert_rule_active` | 1 if the speedtest alert rule is active | `name`, `event`, `provider` |
+| `zepeed_ping_alert_rule_active` | 1 if the ping alert rule is active | `name`, `target` |
+| `zepeed_maintenance_active` | 1 if any maintenance window is currently active | - |
+| `zepeed_webhook_deliveries_total` | Webhook delivery count (last 24h) | `name`, `result` |
+| `zepeed_info` | Static metadata (version, PHP version) | `version`, `php_version` |
+
+### Grafana Integration
+
+You can easily visualize these metrics in Grafana by adding your Zepeed instance as a Prometheus data source. Most users create a dashboard showing download/upload trends over time and a heatmap of ping latency.

@@ -74,7 +74,54 @@
           "2.x/features",
           "2.x/changelog",
           "2.x/troubleshooting",
-          "2.x/contribute"
+          "2.x/contribute",
+          {
+            "group": "Getting Started",
+            "icon": "notebook",
+            "pages": [
+              "2.x/quickstart",
+              {
+                "group": "Installation",
+                "pages": [
+                  "2.x/using-docker-compose",
+                  "2.x/using-docker-image"
+                ]
+              },
+              "2.x/Providers-and-schedule",
+              "2.x/environment"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "icon": "brain-cog",
+            "pages": [
+              "2.x/configuration/webhooks",
+              "2.x/configuration/email-notifications",
+              "2.x/configuration/maintenance-windows",
+              "2.x/configuration/ping-monitoring",
+              "2.x/configuration/dashboard",
+              "2.x/configuration/user-management"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "icon": "container",
+            "pages": [
+              "2.x/integrations/prometheus",
+              "2.x/integrations/mcp",
+              "2.x/integrations/mcp-parity"
+            ]
+          },
+          "2.x/api-reference",
+          "2.x/local-development",
+          {
+            "group": "More",
+            "icon": "link",
+            "pages": [
+              "2.x/source-code",
+              "2.x/update-the-docs"
+            ]
+          }
         ]
       }
     ]

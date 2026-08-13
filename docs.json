@@ -109,5 +109,10 @@
   },
   "seo": {
     "indexing": "all"
+  },
+  "integrations": {
+    "telemetry": {
+      "enabled": true
+    }
   }
 }

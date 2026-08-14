@@ -83,6 +83,7 @@
               {
                 "group": "Installation",
                 "pages": [
+                  "2.x/upgrading-from-1x",
                   "2.x/using-docker-compose",
                   "2.x/using-docker-image"
                 ]

@@ -113,6 +113,7 @@
               "2.x/integrations/mcp-parity"
             ]
           },
+          "2.x/api-reference",
           "2.x/local-development",
           {
             "group": "More",

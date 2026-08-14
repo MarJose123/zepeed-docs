@@ -169,7 +169,7 @@
   "api": {
     "playground": {
       "proxy": true,
-      "display": "auth",
+      "display": "interactive",
       "credentials": true
     },
     "openapi": "openapi.json",

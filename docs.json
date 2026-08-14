@@ -153,7 +153,7 @@
     "library": "lucide"
   },
   "markdown": {
-    "schema": false
+    "schema": true
   },
   "seo": {
     "indexing": "all"
@@ -165,7 +165,15 @@
   },
   "api": {
     "playground": {
-      "proxy": false
+      "proxy": false,
+      "display": "interactive",
+      "credentials": true
+    },
+    "openapi": "https://raw.githubusercontent.com/MarJose123/Zepeed/baef8d585b91c4872d8c448852bde92b62f8f160/openapi.json",
+    "examples": {
+      "defaults": "all",
+      "prefill": true,
+      "autogenerate": true
     }
   }
 }

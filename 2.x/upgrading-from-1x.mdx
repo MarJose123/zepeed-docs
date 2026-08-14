@@ -1,12 +1,12 @@
 ---
 title: "Upgrading from 1.x to 2.x"
 sidebarTitle: "Upgrading from 1.x"
-description: "How to upgrade an existing Zepeed 1.x instance to 2.x — automatic table renames, token abilities, breaking changes, rollback, and verification."
+description: "How to upgrade an existing Zepeed 1.x instance to 2.x — automatic table renames, the Ping Alert Rules → Workflow Rules merge, token abilities, breaking changes, rollback, and verification."
 ---
 
 Zepeed **2.x** renames the speedtest **Alert Rules** feature to **Workflow Rules** (models, REST API endpoints, MCP tools, token abilities, database tables, and the web UI). Your data and configuration are preserved automatically — the migration renames the tables **in place** and rewrites existing API token abilities, so **no manual data move is required**.
 
-> The separate **Ping Alert Rules** feature is **not** renamed and is unaffected by this upgrade.
+> The separate **Ping Alert Rules** feature is **merged** into **Workflow Rules** by this upgrade — see [Ping Alert Rules merged into Workflow Rules](#ping-alert-rules-merged-into-workflow-rules) below.
 
 ## TL;DR
 
@@ -50,6 +50,18 @@ Stored token abilities are rewritten by the migration (`up()`), so a plain `php 
 
 On a fresh 2.x install the tables are created directly as `workflow_*`; the rename migration detects the legacy tables are absent and becomes a no-op.
 
+### 4. Ping Alert Rules are merged into Workflow Rules
+
+The migration `database/migrations/2026_08_14_000001_merge_ping_alert_rules_into_workflow_rules.php` folds the separate ping alert rules into workflow rules. Ping rules become ordinary workflow rules with `event = 'ping'` and a `ping_target_id`:
+
+| 1.x | 2.x |
+| --- | --- |
+| `ping_alert_rules` | copied into `workflow_rules` as `event = 'ping'` rows (UUIDs preserved) |
+| `ping_alert_conditions` | copied into `workflow_rule_conditions` (with `lookback_minutes`) |
+| `ping_alert_actions` | copied into `workflow_rule_actions` |
+
+`workflow_rules` gains a nullable `ping_target_id` FK (cascade on delete) plus a unique `(ping_target_id, name)` index; `workflow_rule_conditions` gains a nullable `lookback_minutes` column. Stored `ping-alerts:*` token abilities are rewritten to `workflow-rules:*` in the same migration. After the migration the legacy `ping_alert_*` tables are dropped.
+
 ## Breaking changes
 
 | Area | 1.x | 2.x |
@@ -61,14 +73,27 @@ On a fresh 2.x install the tables are created directly as `workflow_*`; the rena
 
 Update any external consumers (scripts, dashboards, AI clients) that call the old endpoint, tool, or ability names.
 
+### Ping Alert Rules merged into Workflow Rules
+
+Zepeed 2.x also merges the separate **Ping Alert Rules** feature into **Workflow Rules**:
+
+| Area | Before | After |
+| --- | --- | --- |
+| REST API | `/api/v1/ping-alerts`, `/api/v1/ping-alerts/{id}`, `/api/v1/ping-alerts/{id}/toggle` | `/api/v1/workflow-rules` (ping rules are `event: "ping"` \+ `ping_target_id`; old path removed, **not** aliased) |
+| Token abilities | `ping-alerts:*` | `workflow-rules:*` (existing tokens migrated automatically) |
+| MCP tools | `ListPingAlertRules`, `CreatePingAlertRule`, `UpdatePingAlertRule`, `DeletePingAlertRule`, `TogglePingAlertRule` | the corresponding `*WorkflowRule` tools accept `event: "ping"`, `ping_target_id`, ping metrics and `lookback_minutes` |
+| Web UI | Network → **Ping Alert Rules** (`/speedtest/network/ping-alerts`) | Settings → **Workflow Rules** (`/speedtest/settings/workflow-rules`) — pick the **Ping result recorded** event |
+| Tables | `ping_alert_rules`, `ping_alert_conditions`, `ping_alert_actions` | rows copied into `workflow_rules` (`event = 'ping'`), `workflow_rule_conditions` (with `lookback_minutes`) and `workflow_rule_actions`; legacy tables dropped |
+
+The migration runs automatically on `php artisan migrate`; existing ping rules and `ping-alerts:*` token abilities are preserved. New ping condition metrics (`latency_avg`, `latency_max`, `consecutive_failures`) live on `WorkflowRuleMetric`, and new operators (`is_above_or_equal`, `is_below_or_equal`) on `WorkflowRuleOperator`.
+
 ### Not renamed (intentionally)
 
-- **Ping Alert Rules** — `ping-alerts:*` abilities, `/api/v1/ping-alerts`, `PingAlertRule*` models/tools, `ping_alert_*` tables.
-- **Prometheus metric names** — `zepeed_alert_rule_active` and `zepeed_alert_rule_last_triggered_timestamp` are a stable external contract for dashboards and are kept unchanged.
+- **Prometheus metric names** — `zepeed_alert_rule_active`, `zepeed_alert_rule_last_triggered_timestamp`, `zepeed_ping_alert_rule_active` and `zepeed_ping_alert_rule_last_triggered_timestamp` are a stable external contract for dashboards and are kept unchanged.
 
 ## Rollback
 
-`php artisan migrate:rollback` runs the migration's `down()`: it restores the legacy `alert_*` table/column names and flips token abilities back to `alerts:*`. If you only roll back the rename migration while 2.x code is still deployed, the app will be broken — roll back the deployment as a unit.
+`php artisan migrate:rollback` runs each migration's `down()`: the rename migration restores the legacy `alert_*` table/column names and flips `workflow-rules:*` abilities back to `alerts:*`; the merge migration recreates the `ping_alert_*` tables, moves `event = 'ping'` workflow rules back into them, and drops the `ping_target_id` / `lookback_minutes` columns. If you only roll back the migrations while 2.x code is still deployed, the app will be broken — roll back the deployment as a unit.
 
 > On MariaDB/MySQL, `down()` performs the same foreign-key column renames as `up()` and can hit error 1025 mid-way, leaving a mixed `alert_*`/`workflow_*` state. Follow the backup-restore and drop/re-create-FK guidance in [Troubleshooting](#troubleshooting) if that happens.
 
@@ -79,6 +104,9 @@ Update any external consumers (scripts, dashboards, AI clients) that call the ol
 SELECT COUNT(*) FROM workflow_rules;
 SELECT COUNT(*) FROM workflow_rule_conditions;
 SELECT COUNT(*) FROM workflow_rule_actions;
+
+-- Your old ping alert rules should now be workflow rules with event = 'ping'
+SELECT COUNT(*) FROM workflow_rules WHERE event = 'ping';
 ```
 
 ```bash
@@ -86,6 +114,10 @@ SELECT COUNT(*) FROM workflow_rule_actions;
 #   MySQL / MariaDB:  SHOW TABLES LIKE 'alert\_rule%';
 #   PostgreSQL:       \dt alert_rule*
 #   SQLite:           SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'alert_rule%';
+
+# The ping_alert_* tables should be gone too
+#   MySQL / MariaDB:  SHOW TABLES LIKE 'ping\_alert\_%';
+#   SQLite:           SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'ping_alert_%';
 ```
 
 ```bash
@@ -96,7 +128,7 @@ php artisan tinker --execute '
 '
 ```
 
-Then trigger a speedtest and confirm your rules fire.
+Then trigger a speedtest and a ping test, and confirm your rules fire.
 
 ## Troubleshooting
 

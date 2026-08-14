@@ -18,7 +18,7 @@ The Zepeed MCP server provides AI agents with a powerful interface to query and 
 | Manage Maintenance Windows | ✅ | ✅ | ✅ |
 | Configure Webhooks | ✅ | ✅ | ✅ |
 | Configure Apprise | ✅ | ❌ | ✅ |
-| Manage Workflow Rules & Ping Alerts | ✅ | ✅ | ✅ |
+| Manage Workflow Rules (incl. Ping Alerts) | ✅ | ✅ | ✅ |
 | Export Results | ✅ | ✅ | ✅ |
 | Manage Ping Targets | ✅ | ❌ | ❌ |
 | View Webhook Deliveries | ✅ | ❌ | ✅ |
@@ -39,8 +39,7 @@ The Zepeed MCP server provides AI agents with a powerful interface to query and 
 | **Webhooks** | `list-webhooks`, `create-webhook`, `update-webhook`, `delete-webhook`, `test-webhook` | `/v1/webhooks`, `/v1/webhooks/{webhook}/test` | Full management via MCP and API. |
 | **Webhook Deliveries** | — | `/v1/webhooks/{webhook}/deliveries` | Delivery history is API-only; MCP `test-webhook` records a delivery. |
 | **Apprise** | — | `/v1/apprise`, `/v1/apprise/{apprise}`, `/v1/apprise/{apprise}/test` | Managed via the Web UI and REST API only; no MCP tools yet. |
-| **Workflow Rules** | `list-workflow-rules`, `create-workflow-rule`, `update-workflow-rule`, `delete-workflow-rule`, `toggle-workflow-rule` | `/v1/workflow-rules`, `/v1/workflow-rules/{workflowRule}/toggle` | Full management via MCP and API. |
-| **Ping Alerts** | `list-ping-alert-rules`, `create-ping-alert-rule`, `update-ping-alert-rule`, `delete-ping-alert-rule`, `toggle-ping-alert-rule` | `/v1/ping-alerts`, `/v1/ping-alerts/{pingAlertRule}/toggle` | Full management via MCP and API. |
+| **Workflow Rules** | `list-workflow-rules`, `create-workflow-rule`, `update-workflow-rule`, `delete-workflow-rule`, `toggle-workflow-rule` | `/v1/workflow-rules`, `/v1/workflow-rules/{workflowRule}/toggle` | Full management via MCP and API. Ping alert rules are workflow rules with `event: "ping"` \+ `ping_target_id` (old `/v1/ping-alerts` endpoints removed in 2.x). |
 | **Exports / Download** | `list-exports`, `create-export`, `get-export` | `/v1/exports`, `/v1/exports/{exportRequest}/download` | Asynchronous; downloads are API/UI only. |
 | **Settings** | `get-app-version` | `/v1/app/version` | Most system settings are not exposed. |
 

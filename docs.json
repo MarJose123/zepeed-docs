@@ -114,6 +114,17 @@
             ]
           },
           "2.x/api-reference",
+          {
+            "groups": [
+             {
+               "group": "Endpoints",
+                "openapi": {
+                  "source": "/openapi.json",
+                  "directory": "/"
+                }
+             } 
+            ]
+          },
           "2.x/local-development",
           {
             "group": "More",

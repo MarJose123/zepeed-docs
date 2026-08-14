@@ -153,7 +153,7 @@
     "library": "lucide"
   },
   "markdown": {
-    "schema": true
+    "schema": false
   },
   "seo": {
     "indexing": "all"

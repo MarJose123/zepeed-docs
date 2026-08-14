@@ -112,16 +112,13 @@ Once connected, your AI assistant will have access to the following tools (tool 
 
 #### Workflow Rules
 
-- `list-workflow-rules`: List speedtest workflow rules with pagination and an optional `is_active` filter.
-- `create-workflow-rule`: Create a speedtest workflow rule with its conditions and actions.
-- `update-workflow-rule`: Update a speedtest workflow rule by id.
-- `delete-workflow-rule`: Delete a speedtest workflow rule by id.
-- `toggle-workflow-rule`: Toggle the active state of a speedtest workflow rule.
-- `list-ping-alert-rules`: List ping alert rules with pagination and an optional `is_active` filter.
-- `create-ping-alert-rule`: Create a ping alert rule with its conditions and actions.
-- `update-ping-alert-rule`: Update a ping alert rule by id.
-- `delete-ping-alert-rule`: Delete a ping alert rule by id.
-- `toggle-ping-alert-rule`: Toggle the active state of a ping alert rule.
+Workflow rule tools manage both speedtest and ping rules. Ping rules are created with `event: "ping"` plus a `ping_target_id`, and their conditions use ping metrics (`latency_avg`, `latency_max`, `packet_loss`, `consecutive_failures`) with a `lookback_minutes` window.
+
+- `list-workflow-rules`: List workflow rules with pagination and optional `is_active` / `event` filters.
+- `create-workflow-rule`: Create a speedtest or ping workflow rule with its conditions and actions.
+- `update-workflow-rule`: Update a speedtest or ping workflow rule by id.
+- `delete-workflow-rule`: Delete a workflow rule by id.
+- `toggle-workflow-rule`: Toggle the active state of a workflow rule.
 
 #### Exports
 

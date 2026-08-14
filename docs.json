@@ -113,17 +113,9 @@
               "2.x/integrations/mcp-parity"
             ]
           },
-          "2.x/api-reference",
           {
-            "groups": [
-             {
-               "group": "Endpoints",
-                "openapi": {
-                  "source": "/openapi.json",
-                  "directory": "/"
-                }
-             } 
-            ]
+            "group": "API Reference",
+            "openapi": "https://github.com/MarJose123/Zepeed/blob/baef8d585b91c4872d8c448852bde92b62f8f160/openapi.json"
           },
           "2.x/local-development",
           {

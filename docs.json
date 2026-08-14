@@ -76,6 +76,7 @@
           "2.x/upgrading-from-1x",
           "2.x/troubleshooting",
           "2.x/contribute",
+          "2.x/local-development",
           {
             "group": "Getting Started",
             "icon": "notebook",
@@ -117,7 +118,6 @@
             "group": "API Reference",
             "openapi": "openapi.json"
           },
-          "2.x/local-development",
           {
             "group": "More",
             "icon": "link",

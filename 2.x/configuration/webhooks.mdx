@@ -30,6 +30,7 @@ When a speedtest run completes — successfully or with a failure — Zepeed sen
     - **Name** — A label that identifies the integration (e.g., `Slack alerts`).
     - **URL** — The full HTTPS endpoint that should receive events.
     - **Events** — Which events to send (test completed, test failed, etc.).
+    - **Secret** — (Optional) A secret key used to sign webhook payloads. Your endpoint can verify the signature in the `X-Signature` header to ensure the request is authentic.
   </Step>
   <Step title="Save and test">
     Save the webhook, then trigger a manual speedtest to confirm your endpoint receives the payload.
@@ -77,6 +78,20 @@ A typical `test.completed` payload looks like:
     Accept the JSON body in your service and store, alert, or transform as needed. Validate the payload before acting on it.
   </Tab>
 </Tabs>
+
+## Webhook signing
+
+For added security, you can configure a webhook secret. When set, Zepeed signs each payload using the `DefaultSigner`, and the signature is sent in the `X-Signature` header.
+
+To verify the signature on your endpoint:
+
+1. Read the raw request body
+2. Read the `X-Signature` header
+3. Compare the signature with your secret
+
+<Note>
+  The secret is used only for signing — it is not sent in the request headers.
+</Note>
 
 ## Troubleshooting
 

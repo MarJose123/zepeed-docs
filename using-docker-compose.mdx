@@ -1,0 +1,338 @@
+---
+title: "Using Docker Compose"
+related: ["/index", "/features", "/using-docker-compose"]
+---
+
+Install and run Zepeed using Docker Compose.
+
+## Requirements
+
+Install the following on your system:
+
+<Tabs>
+  <Tab title="macOS">
+    - **Docker Desktop**: [Download](https://www.docker.com/products/docker-desktop)
+  </Tab>
+  <Tab title="Linux">
+    - **Docker Engine**: [Installation guide](https://docs.docker.com/engine/install/)
+    - **Docker Compose**: Included with Docker Engine 24.0\+
+  </Tab>
+  <Tab title="Windows">
+    - **Docker Desktop**: [Download](https://www.docker.com/products/docker-desktop)
+  </Tab>
+</Tabs>
+
+Verify installation:
+
+```bash
+docker --version
+docker compose version
+```
+
+## Setup
+
+<Tabs>
+  <Tab title="Proxmox LXC">
+    <Steps>
+      <Step title="Create the container">
+        1. In Proxmox, download the **Debian 12** CT template.
+        2. Create a new LXC container with:
+           - **RAM**: 1024 MB (2048 recommended)
+           - **Disk**: 8 GB
+           - **Nesting**: enabled (required for Docker)
+           - Uncheck **Unprivileged container** — Docker needs a privileged LXC.
+        3. Start the container and open its shell.
+      </Step>
+      <Step title="Install Docker inside the LXC">
+        ```bash
+        apt update && apt install -y curl
+        curl -fsSL https://get.docker.com | sh
+        ```
+      </Step>
+    </Steps>
+
+    Continue with [Common setup](#common-setup) below.
+  </Tab>
+  <Tab title="CasaOS">
+    CasaOS ships with Docker pre-installed. Open the CasaOS terminal (via **Files → Terminal** or SSH) and continue directly with [Common setup](#common-setup).
+
+    <Note>
+      CasaOS App Store integration is not yet available for Zepeed. Use the terminal-based setup below.
+    </Note>
+  </Tab>
+  <Tab title="Ubuntu / Debian">
+    Install Docker if not already present:
+
+    ```bash
+    curl -fsSL https://get.docker.com | sh
+    sudo usermod -aG docker $USER   # then log out and back in
+    ```
+
+    Continue with [Common setup](#common-setup) below.
+  </Tab>
+</Tabs>
+
+<Steps>
+  <Step title="Create a working directory">
+    ```bash
+    mkdir -p /opt/zepeed && cd /opt/zepeed
+    ```
+  </Step>
+  <Step title="Download the Compose file and env template">
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/marjose123/zepeed/main/compose.prod.yml -o compose.prod.yml
+    curl -fsSL https://raw.githubusercontent.com/marjose123/zepeed/main/.env.prod.example -o .env
+    ```
+  </Step>
+  <Step title="Configure your environment">
+    Open the `.env` file in your editor:
+
+    ```bash
+    nano .env
+    ```
+
+    **Minimum required values:**
+
+    | Variable | Description |
+    | --- | --- |
+    | `APP_DOMAIN` | Your domain, e.g. `zepeed.example.com` |
+    | `APP_URL` | Full URL, e.g. `https://zepeed.example.com` |
+    | `APP_KEY` | Generate using the command below |
+    | `ACME_EMAIL` | Email for Let's Encrypt notifications |
+    | `DB_ROOT_PASSWORD` | Strong random password for MariaDB root |
+    | `DB_PASSWORD` | Strong random password for the app user |
+    | `PUSHER_APP_KEY` | Any random string, e.g. `zepeed_key` |
+    | `PUSHER_APP_SECRET` | A different strong random string |
+
+    **Generate `APP_KEY`:**
+
+    ```bash
+    docker run --rm marjose123/zepeed:latest php artisan key:generate --show
+    ```
+
+    Paste the output (starts with `base64:`) into `APP_KEY=`.
+  </Step>
+  <Step title="Pull and start">
+    ```bash
+    docker compose -f compose.prod.yml pull
+    docker compose -f compose.prod.yml up -d
+    ```
+
+    Docker pulls all images, runs database migrations automatically, and starts the application. First boot takes ~60 seconds.
+  </Step>
+  <Step title="Default admin account">
+    A default admin account is created automatically on first boot using the credentials in `.env`:
+
+    | Variable | Default |
+    | --- | --- |
+    | `DEFAULT_ADMIN_EMAIL` | `admin@zepeed.local` |
+    | `DEFAULT_ADMIN_PASSWORD` | `zepeed_admin` |
+
+    <Warning>
+      Change `DEFAULT_ADMIN_PASSWORD` in `.env` **before** starting the stack. After login, update your credentials under **Profile Settings**.
+    </Warning>
+
+    On every subsequent restart, the account creation step is skipped automatically.
+  </Step>
+  <Step title="Open in browser">
+    Navigate to `https://your-domain.com`. Let's Encrypt issues a certificate automatically on first request (takes ~10 seconds).
+  </Step>
+  <Step title="Clone repository">
+    Clone the Zepeed repository to your local machine.
+
+    ```bash
+    git clone https://github.com/MarJose123/zepeed.git
+    cd zepeed
+    ```
+  </Step>
+  <Step title="Create environment configuration">
+    Copy the example environment file for your target environment. For development:
+
+    ```bash
+    cp .env.dev.example .env
+    ```
+
+    For production:
+
+    ```bash
+    cp .env.prod.example .env
+    ```
+
+    The environment file contains configuration for the application, database, cache, mail, and external services.
+  </Step>
+  <Step title="Configure environment variables">
+    Edit the `.env` file to match your deployment requirements. At minimum, set:
+
+    ```env
+    APP_NAME="Zepeed"
+    APP_KEY=base64:YOUR_APP_KEY
+    APP_ENV=production
+    APP_DEBUG=false
+    APP_URL=http://localhost:8080
+    APP_TIMEZONE=Asia/Manila
+    
+    PUSHER_APP_ID=
+    PUSHER_APP_KEY=
+    PUSHER_APP_SECRET=
+    PUSHER_APP_CLUSTER=mt1
+    PUSHER_HOST=soketi
+    PUSHER_SCHEME=http
+    PUSHER_PORT=6001
+    
+    VITE_APP_NAME="${APP_NAME}"
+    VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+    VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+    VITE_PUSHER_HOST=localhost
+    VITE_PUSHER_PORT="${PUSHER_PORT}"
+    VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+    
+    AUTORUN_LARAVEL_CONFIG_CACHE=false
+    AUTORUN_LARAVEL_EVENT_CACHE=false
+    AUTORUN_LARAVEL_OPTIMIZE=false
+    AUTORUN_LARAVEL_ROUTE_CACHE=false
+    AUTORUN_LARAVEL_VIEW_CACHE=false
+    AUTORUN_LARAVEL_MIGRATION_SEED=true
+    ```
+
+    <Warning>
+      In production, never commit `.env` to version control. Use secrets management tools (Kubernetes Secrets, Docker Secrets, HashiCorp Vault) instead.
+    </Warning>
+  </Step>
+  <Step title="Start containers">
+    Build and start all services in detached mode.
+
+    ```bash
+    docker compose up -d
+    ```
+
+    Docker Compose will:
+
+    1. Build the Zepeed application image
+    2. Pull MySQL, Redis, and Mailpit images
+    3. Create containers and networks
+    4. Start all services
+  </Step>
+  <Step title="Initialize database">
+    Run database migrations and seed initial data.
+
+    ```bash
+    docker compose exec app php artisan migrate
+    docker compose exec app php artisan db:seed
+    ```
+
+    <Note>
+      If migrations fail with "No such table" errors, ensure the MySQL container is healthy before retrying. Check with `docker compose ps`.
+    </Note>
+  </Step>
+  <Step title="Generate application key">
+    If you haven't set `APP_KEY` in your `.env` file, generate it now.
+
+    ```bash
+    docker compose exec app php artisan key:generate
+    ```
+
+    Update your `.env` file with the generated key and restart the application:
+
+    ```bash
+    docker compose restart app
+    ```
+  </Step>
+  <Step title="Create a user account">
+    Open the Docker terminal for the `app` container and run the following command to create your initial user account:
+
+    ```bash
+    docker compose exec app php artisan app:create-user-account
+    ```
+
+    Follow the interactive prompts to set the user details.
+  </Step>
+  <Step title="Verify installation">
+    Open your browser and navigate to the application URL:
+
+    ```text
+    http://localhost
+    ```
+
+    You should see the Zepeed login page. Log in with default credentials (if seeded) or create a new account via the application interface.
+
+    Verify services are running:
+
+    ```bash
+    docker compose ps
+    ```
+
+    Expected output shows all containers with status "Up".
+  </Step>
+</Steps>
+
+## Essential commands
+
+```bash
+# View logs
+docker compose logs -f app
+
+# Run artisan commands
+docker compose exec app php artisan <command>
+
+# Stop containers
+docker compose stop
+
+# Rebuild after Dockerfile changes
+docker compose up -d --build app
+```
+
+## Troubleshooting
+
+### Container fails to start
+
+Check logs for error messages:
+
+```bash
+docker compose logs app
+docker compose logs mysql
+```
+
+Common issues:
+
+- **Port already in use**: Change port mapping in `compose.yaml`
+- **Insufficient disk space**: Clean up with `docker system prune`
+- **Permission denied**: Ensure Docker daemon is running and you have permissions
+
+### Database connection fails
+
+Verify MySQL is running and healthy:
+
+```bash
+docker compose ps mysql
+docker compose exec mysql mysql -u root -p -e "SELECT 1"
+```
+
+If MySQL fails to start, check data directory permissions:
+
+```bash
+docker compose exec mysql chmod 755 /var/lib/mysql
+```
+
+### Application errors after startup
+
+Wait for MySQL to finish initialization. The first startup takes longer:
+
+```bash
+docker compose logs mysql | grep "Ready for connections"
+```
+
+Then verify the app is running:
+
+```bash
+docker compose restart app
+docker compose logs app
+```
+
+### Reset to clean state
+
+```bash
+docker compose down -v
+docker compose up -d
+docker compose exec app php artisan migrate
+docker compose exec app php artisan db:seed
+```

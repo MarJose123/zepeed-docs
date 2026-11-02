@@ -30,13 +30,27 @@ curl -fsSL https://raw.githubusercontent.com/marjose123/zepeed/main/compose.prod
 curl -fsSL https://raw.githubusercontent.com/marjose123/zepeed/main/.env.prod.example -o .env
 ```
 
-Generate an `APP_KEY` and a `DEFAULT_ADMIN_PASSWORD`, then open `.env` and set:
+Generate an `APP_KEY`, set a `DEFAULT_ADMIN_PASSWORD`, then open `.env` and set:
 
 ```bash
 APP_KEY=base64:...                    # from: docker run --rm marjose123/zepeed:latest php artisan key:generate --show
-APP_URL=http://<your-host-ip>:8080
+APP_DOMAIN=zepeed.example.com         # Your domain for Let's Encrypt
+APP_URL=https://zepeed.example.com    # Full URL with scheme
+ACME_EMAIL=you@example.com            # For Let's Encrypt notifications
+DB_ROOT_PASSWORD=<strong-password>    # MariaDB root password
+DB_PASSWORD=<strong-password>         # MariaDB app user password
 DEFAULT_ADMIN_EMAIL=you@example.com
-DEFAULT_ADMIN_PASSWORD=<strong-password>
+DEFAULT_ADMIN_PASSWORD=<strong-password>  # Minimum 8 characters, required
+PUSHER_APP_ID=zepeed_id               # Random string for WebSockets
+PUSHER_APP_KEY=zepeed_key             # Random string for WebSockets
+PUSHER_APP_SECRET=<strong-password>   # Random string for WebSockets
+```
+
+For local testing without a domain, you can use your host IP:
+
+```bash
+APP_DOMAIN=localhost
+APP_URL=http://localhost
 ```
 
 Start the stack:

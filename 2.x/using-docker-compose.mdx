@@ -37,7 +37,7 @@ docker compose version
       <Step title="Create the container">
         1. In Proxmox, download the **Debian 12** CT template.
         2. Create a new LXC container with:
-           - **RAM**: 1024 MB (2048 recommended)
+           - **RAM**: 2048 MB (4096 recommended)
            - **Disk**: 8 GB
            - **Nesting**: enabled (required for Docker)
            - Uncheck **Unprivileged container** — Docker needs a privileged LXC.
@@ -72,6 +72,8 @@ docker compose version
   </Tab>
 </Tabs>
 
+## Common setup
+
 <Steps>
   <Step title="Create a working directory">
     ```bash
@@ -103,6 +105,8 @@ docker compose version
     | `DB_PASSWORD` | Strong random password for the app user |
     | `PUSHER_APP_KEY` | Any random string, e.g. `zepeed_key` |
     | `PUSHER_APP_SECRET` | A different strong random string |
+    | `PUSHER_APP_ID` | Any random string, e.g. `zepeed_id` |
+    | `DEFAULT_ADMIN_PASSWORD` | **Required** — Admin password (minimum 8 characters) |
 
     **Generate `APP_KEY`:**
 
@@ -119,6 +123,14 @@ docker compose version
     ```
 
     Docker pulls all images, runs database migrations automatically, and starts the application. First boot takes ~60 seconds.
+
+    The stack includes:
+
+    - **Traefik** — Reverse proxy with automatic Let's Encrypt TLS
+    - **Zepeed app** — The main application
+    - **MariaDB 11** — Database
+    - **Redis** — Cache, sessions, and queue
+    - **Soketi** — WebSocket server for real-time updates
   </Step>
   <Step title="Default admin account">
     A default admin account is created automatically on first boot using the credentials in `.env`:
@@ -126,10 +138,10 @@ docker compose version
     | Variable | Default |
     | --- | --- |
     | `DEFAULT_ADMIN_EMAIL` | `admin@zepeed.local` |
-    | `DEFAULT_ADMIN_PASSWORD` | `zepeed_admin` |
+    | `DEFAULT_ADMIN_PASSWORD` | **No default — must be set in `.env`** |
 
     <Warning>
-      Change `DEFAULT_ADMIN_PASSWORD` in `.env` **before** starting the stack. After login, update your credentials under **Profile Settings**.
+      `DEFAULT_ADMIN_PASSWORD` is **required** — there is no default fallback. The container will fail to create the admin account if this value is not set.
     </Warning>
 
     On every subsequent restart, the account creation step is skipped automatically.
@@ -137,148 +149,25 @@ docker compose version
   <Step title="Open in browser">
     Navigate to `https://your-domain.com`. Let's Encrypt issues a certificate automatically on first request (takes ~10 seconds).
   </Step>
-  <Step title="Clone repository">
-    Clone the Zepeed repository to your local machine.
-
-    ```bash
-    git clone https://github.com/MarJose123/zepeed.git
-    cd zepeed
-    ```
-  </Step>
-  <Step title="Create environment configuration">
-    Copy the example environment file for your target environment. For development:
-
-    ```bash
-    cp .env.dev.example .env
-    ```
-
-    For production:
-
-    ```bash
-    cp .env.prod.example .env
-    ```
-
-    The environment file contains configuration for the application, database, cache, mail, and external services.
-  </Step>
-  <Step title="Configure environment variables">
-    Edit the `.env` file to match your deployment requirements. At minimum, set:
-
-    ```env
-    APP_NAME="Zepeed"
-    APP_KEY=base64:YOUR_APP_KEY
-    APP_ENV=production
-    APP_DEBUG=false
-    APP_URL=http://localhost:8080
-    APP_TIMEZONE=Asia/Manila
-    
-    PUSHER_APP_ID=
-    PUSHER_APP_KEY=
-    PUSHER_APP_SECRET=
-    PUSHER_APP_CLUSTER=mt1
-    PUSHER_HOST=soketi
-    PUSHER_SCHEME=http
-    PUSHER_PORT=6001
-    
-    VITE_APP_NAME="${APP_NAME}"
-    VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
-    VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
-    VITE_PUSHER_HOST=localhost
-    VITE_PUSHER_PORT="${PUSHER_PORT}"
-    VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
-    
-    AUTORUN_LARAVEL_CONFIG_CACHE=false
-    AUTORUN_LARAVEL_EVENT_CACHE=false
-    AUTORUN_LARAVEL_OPTIMIZE=false
-    AUTORUN_LARAVEL_ROUTE_CACHE=false
-    AUTORUN_LARAVEL_VIEW_CACHE=false
-    AUTORUN_LARAVEL_MIGRATION_SEED=true
-    ```
-
-    <Warning>
-      In production, never commit `.env` to version control. Use secrets management tools (Kubernetes Secrets, Docker Secrets, HashiCorp Vault) instead.
-    </Warning>
-  </Step>
-  <Step title="Start containers">
-    Build and start all services in detached mode.
-
-    ```bash
-    docker compose up -d
-    ```
-
-    Docker Compose will:
-
-    1. Build the Zepeed application image
-    2. Pull MySQL, Redis, and Mailpit images
-    3. Create containers and networks
-    4. Start all services
-  </Step>
-  <Step title="Initialize database">
-    Run database migrations and seed initial data.
-
-    ```bash
-    docker compose exec app php artisan migrate
-    docker compose exec app php artisan db:seed
-    ```
-
-    <Note>
-      If migrations fail with "No such table" errors, ensure the MySQL container is healthy before retrying. Check with `docker compose ps`.
-    </Note>
-  </Step>
-  <Step title="Generate application key">
-    If you haven't set `APP_KEY` in your `.env` file, generate it now.
-
-    ```bash
-    docker compose exec app php artisan key:generate
-    ```
-
-    Update your `.env` file with the generated key and restart the application:
-
-    ```bash
-    docker compose restart app
-    ```
-  </Step>
-  <Step title="Create a user account">
-    Open the Docker terminal for the `app` container and run the following command to create your initial user account:
-
-    ```bash
-    docker compose exec app php artisan app:create-user-account
-    ```
-
-    Follow the interactive prompts to set the user details.
-  </Step>
-  <Step title="Verify installation">
-    Open your browser and navigate to the application URL:
-
-    ```text
-    http://localhost
-    ```
-
-    You should see the Zepeed login page. Log in with default credentials (if seeded) or create a new account via the application interface.
-
-    Verify services are running:
-
-    ```bash
-    docker compose ps
-    ```
-
-    Expected output shows all containers with status "Up".
-  </Step>
 </Steps>
 
 ## Essential commands
 
 ```bash
 # View logs
-docker compose logs -f app
+docker compose -f compose.prod.yml logs -f app
 
 # Run artisan commands
-docker compose exec app php artisan <command>
+docker compose -f compose.prod.yml exec app php artisan <command>
 
 # Stop containers
-docker compose stop
+docker compose -f compose.prod.yml down
 
 # Rebuild after Dockerfile changes
-docker compose up -d --build app
+docker compose -f compose.prod.yml up -d --build app
+
+# Backup database
+docker compose -f compose.prod.yml exec app bash /var/www/html/docker/production/backup.sh
 ```
 
 ## Troubleshooting
@@ -288,51 +177,53 @@ docker compose up -d --build app
 Check logs for error messages:
 
 ```bash
-docker compose logs app
-docker compose logs mysql
+docker compose -f compose.prod.yml logs app
+docker compose -f compose.prod.yml logs mariadb
 ```
 
 Common issues:
 
-- **Port already in use**: Change port mapping in `compose.yaml`
+- **Port already in use**: Change `TRAEFIK_HTTP_PORT` and `TRAEFIK_HTTPS_PORT` in `.env`
 - **Insufficient disk space**: Clean up with `docker system prune`
 - **Permission denied**: Ensure Docker daemon is running and you have permissions
 
 ### Database connection fails
 
-Verify MySQL is running and healthy:
+Verify MariaDB is running and healthy:
 
 ```bash
-docker compose ps mysql
-docker compose exec mysql mysql -u root -p -e "SELECT 1"
+docker compose -f compose.prod.yml ps mariadb
+docker compose -f compose.prod.yml exec mariadb mariadb -u root -p -e "SELECT 1"
 ```
 
-If MySQL fails to start, check data directory permissions:
+If MariaDB fails to start, check data directory permissions:
 
 ```bash
-docker compose exec mysql chmod 755 /var/lib/mysql
+docker compose -f compose.prod.yml exec mariadb chmod 755 /var/lib/mysql
 ```
 
 ### Application errors after startup
 
-Wait for MySQL to finish initialization. The first startup takes longer:
+Wait for MariaDB to finish initialization. The first startup takes longer:
 
 ```bash
-docker compose logs mysql | grep "Ready for connections"
+docker compose -f compose.prod.yml logs mariadb | grep "ready for connections"
 ```
 
 Then verify the app is running:
 
 ```bash
-docker compose restart app
-docker compose logs app
+docker compose -f compose.prod.yml restart app
+docker compose -f compose.prod.yml logs app
 ```
 
 ### Reset to clean state
 
+<Warning>
+  This will delete all data including speedtest results.
+</Warning>
+
 ```bash
-docker compose down -v
-docker compose up -d
-docker compose exec app php artisan migrate
-docker compose exec app php artisan db:seed
+docker compose -f compose.prod.yml down -v
+docker compose -f compose.prod.yml up -d
 ```

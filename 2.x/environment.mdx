@@ -23,6 +23,18 @@ description: "All environment variables available for configuring your Zepeed in
 
 ---
 
+## Docker Compose
+
+<ParamField path="APP_DOMAIN" type="string" required>
+  Your public domain for Let's Encrypt TLS certificates. Required when using Docker Compose with Traefik. Example: `zepeed.example.com`.
+</ParamField>
+
+<ParamField path="ACME_EMAIL" type="string" required>
+  Email address for Let's Encrypt certificate notifications. Required when using Docker Compose with Traefik.
+</ParamField>
+
+---
+
 ## Database
 
 <ParamField path="DB_CONNECTION" default="mariadb" type="string">
@@ -43,6 +55,10 @@ description: "All environment variables available for configuring your Zepeed in
 
 <ParamField path="DB_USERNAME" type="string">
   Database username. Not required for `sqlite`.
+</ParamField>
+
+<ParamField path="DB_ROOT_PASSWORD" type="string">
+  Strong random root password for MariaDB. Required when using Docker Compose with MariaDB.
 </ParamField>
 
 <ParamField path="DB_PASSWORD" type="string">
@@ -75,6 +91,94 @@ description: "All environment variables available for configuring your Zepeed in
 
 <ParamField path="PUSHER_SCHEME" default="http" type="string">
   `http` for local setups. `https` when behind a TLS-terminating reverse proxy.
+</ParamField>
+
+---
+
+## Redis
+
+<ParamField path="REDIS_HOST" default="redis" type="string">
+  Redis hostname. Used for cache, sessions, and queue. When using Docker Compose, this defaults to the `redis` container name.
+</ParamField>
+
+<ParamField path="REDIS_PASSWORD" type="string">
+  Optional Redis password. Leave empty for no authentication.
+</ParamField>
+
+<ParamField path="REDIS_PORT" default="6379" type="number">
+  Redis port.
+</ParamField>
+
+---
+
+## Mail
+
+<ParamField path="MAIL_MAILER" default="log" type="string">
+  Mail driver. Supported values: `smtp`, `mailgun`, `postmark`, `ses`, `resend`, `sendmail`, `log`.
+</ParamField>
+
+<ParamField path="MAIL_HOST" type="string">
+  SMTP server hostname. Required when `MAIL_MAILER=smtp`.
+</ParamField>
+
+<ParamField path="MAIL_PORT" default="587" type="number">
+  SMTP server port.
+</ParamField>
+
+<ParamField path="MAIL_USERNAME" type="string">
+  SMTP username. Required when `MAIL_MAILER=smtp`.
+</ParamField>
+
+<ParamField path="MAIL_PASSWORD" type="string">
+  SMTP password. Required when `MAIL_MAILER=smtp`.
+</ParamField>
+
+<ParamField path="MAIL_ENCRYPTION" default="tls" type="string">
+  SMTP encryption. Values: `tls`, `ssl`, or leave empty for no encryption.
+</ParamField>
+
+<ParamField path="MAIL_FROM_ADDRESS" default="hello@zepeed.local" type="string">
+  Default "from" address for all outgoing emails.
+</ParamField>
+
+<ParamField path="MAIL_FROM_NAME" default="Zepeed" type="string">
+  Default "from" name for all outgoing emails.
+</ParamField>
+
+---
+
+## Logging
+
+<ParamField path="LOG_CHANNEL" default="daily" type="string">
+  Log channel driver. Use `daily` for rotated log files, `single` for a single log file, or `stack` for multiple channels.
+</ParamField>
+
+<ParamField path="LOG_MAX_FILES" default="30" type="number">
+  Maximum number of daily log files to keep when `LOG_CHANNEL=daily`.
+</ParamField>
+
+---
+
+## Traefik
+
+<ParamField path="TRAEFIK_HTTP_PORT" default="80" type="number">
+  Host port for HTTP (Traefik). Change if port 80 is already in use.
+</ParamField>
+
+<ParamField path="TRAEFIK_HTTPS_PORT" default="443" type="number">
+  Host port for HTTPS (Traefik). Change if port 443 is already in use.
+</ParamField>
+
+<ParamField path="TRAEFIK_LOG_LEVEL" default="ERROR" type="string">
+  Traefik log level. Values: `DEBUG`, `INFO`, `WARN`, `ERROR`.
+</ParamField>
+
+---
+
+## Advanced
+
+<ParamField path="VITE_PUSHER_PATH" default="/app" type="string">
+  WebSocket path prefix. Must match the Soketi Traefik route when using Docker Compose.
 </ParamField>
 
 ---

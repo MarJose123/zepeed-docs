@@ -124,7 +124,8 @@
               "2.x/source-code",
               "2.x/update-the-docs"
             ]
-          }
+          },
+          "2.x/api-reference"
         ],
         "default": true
       }

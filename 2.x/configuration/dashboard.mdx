@@ -14,7 +14,7 @@ The top of the dashboard displays summary cards for the most recent test run:
 - **Ping** — Latency in milliseconds at the time of the test.
 - **Jitter** — Variation in latency across the test.
 - **Provider** — Which provider produced the result (Ookla, LibreSpeed, Cloudflare, or Fast.com).
-- **Status** — `Success`, `Failed`, or `Skipped` (e.g., during a [maintenance window](/configuration/maintenance-windows)).
+- **Status** — `Success`, `Failed`, or `Skipped` (e.g., during a [maintenance window](/2.x/configuration/maintenance-windows)).
 
 Each card compares the latest value to a recent baseline so you can immediately see whether speeds are up, down, or stable.
 
@@ -64,7 +64,7 @@ Manual runs use the same providers and storage as scheduled runs — there's no 
 
 ## Live status
 
-When a scheduled or manual test is executing, a live status indicator shows progress in real time using the built-in WebSocket connection. If you don't see live updates, see [Troubleshooting — WebSocket not connecting](/troubleshooting).
+When a scheduled or manual test is executing, a live status indicator shows progress in real time using the built-in WebSocket connection. If you don't see live updates, see [Troubleshooting — WebSocket not connecting](/2.x/troubleshooting).
 
 ## Filters
 
@@ -79,11 +79,11 @@ Filters persist while you navigate but reset when you sign out.
 
 ## Exporting data
 
-For anything beyond the built-in views, use the [API reference](/api-reference) to pull raw test data into Grafana, Prometheus, or your own dashboards.
+For anything beyond the built-in views, use the [API reference](/2.x/api-reference) to pull raw test data into Grafana, Prometheus, or your own dashboards.
 
 ## Related pages
 
-- [Providers and schedule](/Providers-and-schedule)
-- [Ping monitoring](/configuration/ping-monitoring)
-- [Maintenance windows](/configuration/maintenance-windows)
-- [API reference](/api-reference)
+- [Providers and schedule](/2.x/Providers-and-schedule)
+- [Ping monitoring](/2.x/configuration/ping-monitoring)
+- [Maintenance windows](/2.x/configuration/maintenance-windows)
+- [API reference](/2.x/api-reference)

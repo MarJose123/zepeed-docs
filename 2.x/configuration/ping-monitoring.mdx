@@ -84,14 +84,14 @@ From **Dashboard → Ping Monitoring** you can:
 - See live status (`up`, `degraded`, `down`) per target.
 - View latency and packet-loss graphs over the last hour, day, or week.
 - Compare ping history against speedtest history on the same timeline.
-- Export raw probe data via the [API](/api-reference).
+- Export raw probe data via the [API](/2.x/api-reference).
 
 ## Notifications
 
 Ping thresholds can trigger the same notification channels as speedtests:
 
-- **Webhooks** — See [Webhooks](/configuration/webhooks).
-- **Email** — See [Email notifications](/configuration/email-notifications).
+- **Webhooks** — See [Webhooks](/2.x/configuration/webhooks).
+- **Email** — See [Email notifications](/2.x/configuration/email-notifications).
 
 Typical alerts include `target.down`, `target.recovered`, and `target.degraded`.
 
@@ -100,7 +100,7 @@ Typical alerts include `target.down`, `target.recovered`, and `target.degraded`.
 - **Probe multiple targets.** A single target can't distinguish between ISP issues and target-host issues.
 - **Keep intervals reasonable.** Probing every second adds load without much extra insight. Every 30–60 seconds is usually enough.
 - **Tune thresholds to your link.** Fiber and cable behave differently — set thresholds based on your normal baseline, not absolute numbers.
-- **Pair with maintenance windows.** Pause noisy alerts during planned outages with [maintenance windows](/configuration/maintenance-windows).
+- **Pair with maintenance windows.** Pause noisy alerts during planned outages with [maintenance windows](/2.x/configuration/maintenance-windows).
 - **Correlate with speedtests.** When a speedtest fails, check the ping history around the same time to see whether the link dropped or the provider's server was unreachable.
 
 ## Troubleshooting
@@ -108,11 +108,11 @@ Typical alerts include `target.down`, `target.recovered`, and `target.degraded`.
 - **ICMP blocked?** Some networks block ICMP. Switch the target to TCP on port 443 or 80 to probe reachability instead.
 - **High latency on every target?** The issue is likely on your side of the link — router, Wi-Fi, or local congestion.
 - **High latency on one target only?** The issue is likely with that host or the path to it, not your connection.
-- **No data showing?** Confirm the Zepeed container has outbound network access and the scheduler is running. See [Troubleshooting](/troubleshooting).
+- **No data showing?** Confirm the Zepeed container has outbound network access and the scheduler is running. See [Troubleshooting](/2.x/troubleshooting).
 
 ## Related pages
 
-- [Providers and schedule](/Providers-and-schedule)
-- [Webhooks](/configuration/webhooks)
-- [Email notifications](/configuration/email-notifications)
-- [Maintenance windows](/configuration/maintenance-windows)
+- [Providers and schedule](/2.x/Providers-and-schedule)
+- [Webhooks](/2.x/configuration/webhooks)
+- [Email notifications](/2.x/configuration/email-notifications)
+- [Maintenance windows](/2.x/configuration/maintenance-windows)

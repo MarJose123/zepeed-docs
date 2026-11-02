@@ -3,7 +3,7 @@ title: "Local Development"
 description: "Run Zepeed locally for development without Docker."
 ---
 
-This guide is for contributors who want to run Zepeed from source on their own machine. If you just want to deploy Zepeed, use [Using Docker Compose](/using-docker-compose) instead.
+This guide is for contributors who want to run Zepeed from source on their own machine. If you just want to deploy Zepeed, use [Using Docker Compose](/2.x/using-docker-compose) instead.
 
 ## Requirements
 
@@ -38,7 +38,7 @@ This guide is for contributors who want to run Zepeed from source on their own m
     php artisan key:generate
     ```
 
-    Adjust database, mail, and provider settings in `.env`. See [Environment Variables](/environment) for the full reference.
+    Adjust database, mail, and provider settings in `.env`. See [Environment Variables](/2.x/environment) for the full reference.
   </Step>
   <Step title="Run database migrations">
     ```bash
@@ -100,6 +100,6 @@ All three must pass before a PR can be merged. Run `composer run format`, `compo
 
 ## Related pages
 
-- [Contribute](/contribute)
-- [Using Docker Compose](/using-docker-compose)
-- [Environment Variables](/environment)
+- [Contribute](/2.x/contribute)
+- [Using Docker Compose](/2.x/using-docker-compose)
+- [Environment Variables](/2.x/environment)

@@ -11,8 +11,8 @@ When a speedtest run completes — successfully or with a failure — Zepeed sen
 
 ## Prerequisites
 
-- Zepeed is installed and running. See [Using Docker Compose](/using-docker-compose).
-- At least one provider is enabled. See [Providers and schedule](/Providers-and-schedule).
+- Zepeed is installed and running. See [Using Docker Compose](/2.x/using-docker-compose).
+- At least one provider is enabled. See [Providers and schedule](/2.x/Providers-and-schedule).
 - A reachable HTTP(S) endpoint that can accept JSON `POST` requests.
 
 ## Add a webhook
@@ -99,4 +99,4 @@ To verify the signature on your endpoint:
 - **TLS errors?** Make sure the endpoint uses a valid certificate. Self-signed certificates may be rejected.
 - **Retries?** Failed deliveries may be retried automatically. Check Zepeed logs for delivery attempts.
 
-See [Troubleshooting](/troubleshooting) for additional help.
+See [Troubleshooting](/2.x/troubleshooting) for additional help.
